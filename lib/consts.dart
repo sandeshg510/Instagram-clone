@@ -6,12 +6,12 @@ const primaryColor = Colors.white;
 const secondaryColor = Colors.grey;
 const darkGreyColor = Color.fromRGBO(97, 97, 97, 1);
 
-Widget sizeVer(double height) {
+Widget sizedBoxVer(double height) {
   return SizedBox(
     height: height,
   );
 }
 
-Widget sizeHor(double width) {
+Widget sizeBoxHor(double width) {
   return SizedBox(width: width);
 }

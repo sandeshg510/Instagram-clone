@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_clone/consts.dart';
-import 'package:instagram_clone/presentation/pages/sign_up_page.dart';
+import 'package:instagram_clone/presentation/pages/login_page.dart';
 import 'package:instagram_clone/presentation/widgets/button_container_widget.dart';
 import 'package:instagram_clone/presentation/widgets/form_container_widget.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class SignUpPage extends StatelessWidget {
+  const SignUpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +26,51 @@ class LoginPage extends StatelessWidget {
                 color: primaryColor,
               ),
             ),
-            sizedBoxVer(30),
+            sizedBoxVer(18),
+            Center(
+              child: Stack(
+                children: [
+                  Container(
+                    height: 70,
+                    width: 70,
+                    decoration: BoxDecoration(
+                        color: secondaryColor,
+                        borderRadius: BorderRadius.circular(35)),
+                    child: Image.asset('assets/profile_default.png'),
+                  ),
+                  Positioned(
+                    right: -15,
+                    bottom: -15,
+                    child: IconButton(
+                      color: blueColor,
+                      onPressed: () {},
+                      icon: const Icon(Icons.add_a_photo_rounded),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            sizedBoxVer(35),
             const FormContainerWidget(
-              hintText: 'Email',
+              hintText: 'Enter your Username',
             ),
             sizedBoxVer(15),
             const FormContainerWidget(
-              hintText: 'Password',
+              hintText: 'Enter your Email',
+            ),
+            sizedBoxVer(15),
+            const FormContainerWidget(
+              hintText: 'Enter your Password',
               isPasswordField: true,
+            ),
+            sizedBoxVer(15),
+            const FormContainerWidget(
+              hintText: 'Enter your Bio',
             ),
             sizedBoxVer(15),
             const ButtonContainerWidget(
               color: blueColor,
-              title: 'Sign in',
+              title: 'Sign Up',
             ),
             Flexible(flex: 2, child: Container()),
             const Divider(),
@@ -46,7 +78,7 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Don't have and account? ",
+                  "Already have an account? ",
                   style: TextStyle(color: primaryColor),
                 ),
                 InkWell(
@@ -54,13 +86,11 @@ class LoginPage extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SignUpPage()));
-                    // Navigator.pushNamedAndRemoveUntil(
-                    //     context, PageConst.signUpPage, (route) => false);
+                            builder: (context) => const LoginPage()));
                     // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignUpPage()), (route) => false);
                   },
                   child: const Text(
-                    "Sign Up.",
+                    "Sign In.",
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: primaryColor),
                   ),

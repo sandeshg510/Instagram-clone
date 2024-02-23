@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/presentation/pages/home_page.dart';
+import 'package:instagram_clone/presentation/pages/sign_up_page.dart';
 
 import 'presentation/pages/login_page.dart';
 
@@ -14,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark(),
-      home: const LoginPage(),
+      home: const HomePage(),
     );
   }
 }
