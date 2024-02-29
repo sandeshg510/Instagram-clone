@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instagram_clone/presentation/pages/home_page.dart';
-import 'package:instagram_clone/presentation/pages/sign_up_page.dart';
-
-import 'presentation/pages/login_page.dart';
+import 'package:instagram_clone/presentation/pages/main_screen/main_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark(),
-      home: const HomePage(),
+      home: const MainPage(),
     );
   }
 }
