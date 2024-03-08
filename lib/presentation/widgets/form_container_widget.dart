@@ -12,6 +12,7 @@ class FormContainerWidget extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputType? inputType;
+  final double? width;
 
   const FormContainerWidget(
       {super.key,
@@ -24,7 +25,8 @@ class FormContainerWidget extends StatefulWidget {
       this.onSaved,
       this.validator,
       this.onFieldSubmitted,
-      this.inputType});
+      this.inputType,
+      this.width = double.infinity});
 
   @override
   _FormContainerWidgetState createState() => new _FormContainerWidgetState();
@@ -36,8 +38,8 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: 50,
-      width: double.infinity,
+      height: 50,
+      width: widget.width,
       decoration: BoxDecoration(
         color: Colors.white12.withOpacity(.35),
         borderRadius: BorderRadius.circular(3),

@@ -12,6 +12,6 @@ Widget sizedBoxVer(double height) {
   );
 }
 
-Widget sizeBoxHor(double width) {
+Widget sizedBoxHor(double width) {
   return SizedBox(width: width);
 }
