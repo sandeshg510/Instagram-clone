@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark(),
+      // onGenerateRoute: OnGenerateRoute.route,
       home: const MainPage(),
     );
   }
