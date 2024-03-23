@@ -56,7 +56,7 @@ class HomePage extends StatelessWidget {
                     ),
                     sizedBoxHor(size.width * 0.027),
                     const Text(
-                      'username',
+                      'username and',
                       style: TextStyle(color: primaryColor),
                     ),
                   ],
