@@ -117,10 +117,11 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const EditProfilePage()));
+                      Navigator.pushNamed(context, PageConst.editProfilePage);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => const EditProfilePage()));
                     },
                     child: const ProfileOptionButton(
                       title: 'Edit profile',

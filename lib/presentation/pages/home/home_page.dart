@@ -93,10 +93,7 @@ class HomePage extends StatelessWidget {
                     sizedBoxHor(15),
                     InkWell(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const CommentPage()));
+                        Navigator.pushNamed(context, PageConst.commentPage);
                       },
                       child: Image.asset(
                         'assets/chat.png',
@@ -192,12 +189,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => const EditProfilePage()));
-                  },
+                  onTap: () {},
                   child: const Padding(
                     padding: EdgeInsets.only(
                         right: 230, left: 30, bottom: 15, top: 10),
@@ -209,10 +201,7 @@ class HomePage extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const UpdatePostPage()));
+                    Navigator.pushNamed(context, PageConst.updatePostPage);
                   },
                   child: const Padding(
                     padding: EdgeInsets.only(

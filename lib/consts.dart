@@ -15,3 +15,18 @@ Widget sizedBoxVer(double height) {
 Widget sizedBoxHor(double width) {
   return SizedBox(width: width);
 }
+
+class PageConst {
+  static const String editProfilePage = 'editProfilePage';
+  static const String updatePostPage = 'updatePostPage';
+  static const String commentPage = 'commentPage';
+  static const String loginPage = 'loginPage';
+  static const String signUpPage = 'signUpPage';
+}
+
+class FirebaseConst {
+  static const String users = 'users';
+  static const String posts = 'posts';
+  static const String comments = 'comments';
+  static const String replies = 'replies';
+}
