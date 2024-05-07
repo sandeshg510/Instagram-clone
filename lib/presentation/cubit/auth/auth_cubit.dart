@@ -1,8 +1,7 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/sign_out_usecase.dart';
-
 import '../../../domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
 import '../../../domain/usecases/firebase_usecases/user/is_sign_in_usecase.dart';
 

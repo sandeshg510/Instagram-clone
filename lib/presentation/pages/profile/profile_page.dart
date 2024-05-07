@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/consts.dart';
+import 'package:instagram_clone/presentation/cubit/auth/auth_cubit.dart';
 import 'package:instagram_clone/presentation/pages/profile/edit_profile_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/widgets/profile_option_widget.dart';
 
@@ -203,12 +205,19 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                       right: 230, left: 30, bottom: 15, top: 10),
-                  child: Text(
-                    'Logout',
-                    style: TextStyle(color: secondaryColor, fontSize: 18),
+                  child: InkWell(
+                    onTap: () {
+                      BlocProvider.of<AuthCubit>(context).loggedOut();
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, PageConst.loginPage, (route) => false);
+                    },
+                    child: const Text(
+                      'Logout',
+                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                    ),
                   ),
                 ),
               ],

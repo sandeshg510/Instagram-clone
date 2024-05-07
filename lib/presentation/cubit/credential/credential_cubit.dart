@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/sign_in_user_usecase.dart';
@@ -36,7 +35,7 @@ class CredentialCubit extends Cubit<CredentialState> {
     emit(CredentialLoading());
 
     try {
-      await signInUserUseCase.call(user);
+      await signUpUserUseCase.call(user);
       emit(CredentialSuccess());
     } on SocketException catch (_) {
       emit(CredentialFailure());
