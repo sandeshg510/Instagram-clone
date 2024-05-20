@@ -2,12 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/consts.dart';
+import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import 'package:instagram_clone/presentation/cubit/auth/auth_cubit.dart';
 import 'package:instagram_clone/presentation/pages/profile/edit_profile_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/widgets/profile_option_widget.dart';
+import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  final UserEntity currentUser;
+  const ProfilePage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +21,9 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: backGroundColor,
       appBar: AppBar(
         backgroundColor: backGroundColor,
-        title: const Text(
-          'Username',
-          style: TextStyle(color: primaryColor),
+        title: Text(
+          currentUser.username!,
+          style: const TextStyle(color: primaryColor),
         ),
         actions: [
           Padding(
@@ -43,22 +49,26 @@ class ProfilePage extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    height: 100,
-                    width: 100,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: secondaryColor),
+                    height: 80,
+                    width: 80,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: profileWidget(imageUrl: currentUser.profileUrl),
+                    ),
                   ),
                   sizedBoxHor(25),
-                  const Column(
+                  Column(
                     children: [
                       Text(
-                        '0',
-                        style: TextStyle(
+                        // '0'
+                        '${currentUser.totalPosts}',
+
+                        style: const TextStyle(
                             fontSize: 20,
                             color: primaryColor,
                             fontWeight: FontWeight.bold),
                       ),
-                      Text(
+                      const Text(
                         'posts',
                         style: TextStyle(
                           color: primaryColor,
@@ -67,16 +77,18 @@ class ProfilePage extends StatelessWidget {
                     ],
                   ),
                   sizedBoxHor(25),
-                  const Column(
+                  Column(
                     children: [
                       Text(
-                        '55',
-                        style: TextStyle(
+                        // '0'
+                        '${currentUser.totalFollowers}',
+
+                        style: const TextStyle(
                             fontSize: 20,
                             color: primaryColor,
                             fontWeight: FontWeight.bold),
                       ),
-                      Text(
+                      const Text(
                         'followers',
                         style: TextStyle(
                           color: primaryColor,
@@ -88,7 +100,9 @@ class ProfilePage extends StatelessWidget {
                   const Column(
                     children: [
                       Text(
-                        '105',
+                        '0'
+                        // '${currentUser.totalFollowing!}',
+                        ,
                         style: TextStyle(
                             fontSize: 20,
                             color: primaryColor,
@@ -105,14 +119,17 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
               sizedBoxVer(10),
-              const Text(
-                'Username',
-                style:
-                    TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+              Text(
+                // 'name'
+                '${currentUser.name == '' ? currentUser.username : currentUser.name}',
+
+                style: const TextStyle(
+                    color: primaryColor, fontWeight: FontWeight.bold),
               ),
-              const Text(
-                'Bio of user',
-                style: TextStyle(color: primaryColor),
+              Text(
+                // 'bio'
+                '${currentUser.bio}',
+                style: const TextStyle(color: primaryColor),
               ),
               sizedBoxVer(30),
               Row(

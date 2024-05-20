@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
@@ -9,6 +13,9 @@ import 'package:instagram_clone/presentation/cubit/credential/credential_cubit.d
 import 'package:instagram_clone/presentation/pages/main_screen/main_page.dart';
 import 'package:instagram_clone/presentation/widgets/button_container_widget.dart';
 import 'package:instagram_clone/presentation/widgets/form_container_widget.dart';
+import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
+
+import '../../../main.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -33,31 +40,58 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
+  File? _image;
+
+  Future selectImage() async {
+    try {
+      final pickedFile = await ImagePicker.platform
+          .getImageFromSource(source: ImageSource.gallery);
+
+      setState(() {
+        if (pickedFile != null) {
+          _image = File(pickedFile.path);
+        } else {
+          print('no image has been selected');
+        }
+      });
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'some error occur $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // SchedulerBinding.instance.addPostFrameCallback((rerun) {
+    // });
     return Scaffold(
         backgroundColor: backGroundColor,
         body: BlocConsumer<CredentialCubit, CredentialState>(
-            builder: (context, credentialState) {
-          if (credentialState is CredentialSuccess) {
-            return BlocBuilder<AuthCubit, AuthState>(
-                builder: (context, authState) {
-              if (authState is Authenticated) {
-                return MainPage(uid: authState.uid);
-              } else {
-                return _bodyWidget();
-              }
-            });
-          }
-          return _bodyWidget();
-        }, listener: (context, credentialState) {
-          if (credentialState is CredentialSuccess) {
-            BlocProvider.of<AuthCubit>(context).loggedIn();
-          }
-          if (credentialState is CredentialFailure) {
-            Fluttertoast.showToast(msg: 'Invalid email or password');
-          }
-        }));
+          listener: (context, credentialState) {
+            if (credentialState is CredentialSuccess) {
+              BlocProvider.of<AuthCubit>(context).loggedIn();
+              print('Listener is performed');
+              setState(() {});
+            }
+            if (credentialState is CredentialFailure) {
+              Fluttertoast.showToast(msg: 'Invalid email or password');
+            }
+          },
+          builder: (context, credentialState) {
+            if (credentialState is CredentialSuccess) {
+              print('inside credential');
+
+              return BlocBuilder<AuthCubit, AuthState>(
+                  builder: (context, authState) {
+                if (authState is Authenticated) {
+                  return MainPage(uid: authState.uid);
+                } else {
+                  return _bodyWidget();
+                }
+              });
+            }
+            return _bodyWidget();
+          },
+        ));
   }
 
   _bodyWidget() {
@@ -78,19 +112,18 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Stack(
               children: [
                 Container(
-                  height: 70,
-                  width: 70,
-                  decoration: BoxDecoration(
-                      color: secondaryColor,
-                      borderRadius: BorderRadius.circular(35)),
-                  child: Image.asset('assets/profile_default.png'),
-                ),
+                    height: 70,
+                    width: 70,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(35),
+                      child: profileWidget(image: _image),
+                    )),
                 Positioned(
                   right: -15,
                   bottom: -15,
                   child: IconButton(
                     color: blueColor,
-                    onPressed: () {},
+                    onPressed: selectImage,
                     icon: const Icon(Icons.add_a_photo_rounded),
                   ),
                 ),
@@ -126,7 +159,7 @@ class _SignUpPageState extends State<SignUpPage> {
               _signUpUser();
             },
           ),
-          sizedBoxVer(5),
+          sizedBoxVer(10),
           _isSigningUp == true
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -139,10 +172,10 @@ class _SignUpPageState extends State<SignUpPage> {
                           fontWeight: FontWeight.w400),
                     ),
                     sizedBoxHor(10),
-                    const CircularProgressIndicator(),
+                    const CircularProgressIndicator()
                   ],
                 )
-              : const SizedBox(width: 0, height: 0),
+              : Container(width: 0, height: 0),
           Flexible(flex: 2, child: Container()),
           const Divider(),
           Row(
@@ -177,19 +210,19 @@ class _SignUpPageState extends State<SignUpPage> {
     BlocProvider.of<CredentialCubit>(context)
         .signUpUser(
           user: UserEntity(
-            username: _usernameController.text.trim(),
-            email: _emailController.text.trim(),
-            bio: _bioController.text.trim(),
-            password: _passwordController.text.trim(),
-            totalPosts: 0,
-            totalFollowing: 0,
-            totalFollowers: 0,
-            followers: [],
-            profileUrl: '',
-            website: '',
-            following: [],
-            name: '',
-          ),
+              username: _usernameController.text.trim(),
+              email: _emailController.text.trim(),
+              bio: _bioController.text.trim(),
+              password: _passwordController.text.trim(),
+              totalPosts: 0,
+              totalFollowing: 0,
+              totalFollowers: 0,
+              followers: [],
+              profileUrl: '',
+              website: '',
+              following: [],
+              name: '',
+              imageFile: _image),
         )
         .then((value) => _clear());
   }
@@ -201,6 +234,7 @@ class _SignUpPageState extends State<SignUpPage> {
       _passwordController.clear();
       _bioController.clear();
       _isSigningUp = false;
+      print('clear');
     });
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:instagram_clone/data/data_sources/remote_data_sources/remote_data_sources.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import 'package:instagram_clone/domain/repository/firebase_repository.dart';
@@ -6,9 +8,10 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   final FirebaseRemoteDataSource remoteDataSource;
 
   FirebaseRepositoryImpl({required this.remoteDataSource});
+
   @override
-  Future<void> createUser(UserEntity user) async =>
-      remoteDataSource.createUser(user);
+  Future<void> createUser(UserEntity user, String profileUrl) async =>
+      remoteDataSource.createUser(user, profileUrl);
 
   @override
   Future<String> getCurrentUid() async => remoteDataSource.getCurrentUid();
@@ -38,4 +41,14 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   @override
   Future<void> updateUser(UserEntity user) async =>
       remoteDataSource.updateUser(user);
+
+  @override
+  Future<String> uploadImageToStorage(
+          File? file, bool isPost, String childName) async =>
+      remoteDataSource.uploadImageToStorage(file, isPost, childName);
+
+  @override
+  Future<void> createUserWithImage(UserEntity user, String profileUrl) async {
+    return remoteDataSource.createUserWithImage(user, profileUrl);
+  }
 }

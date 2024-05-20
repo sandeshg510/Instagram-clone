@@ -10,6 +10,7 @@ import 'package:instagram_clone/presentation/pages/credential/login_page.dart';
 import 'package:instagram_clone/presentation/pages/main_screen/main_page.dart';
 import 'injection_container.dart' as di;
 import 'on_generate_route.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
             return BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, authState) {
               if (authState is Authenticated) {
+                print('${authState.uid} sjk');
                 return MainPage(uid: authState.uid);
               } else {
                 return const LoginPage();

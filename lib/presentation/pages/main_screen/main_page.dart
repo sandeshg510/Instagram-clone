@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:instagram_clone/presentation/pages/activity/activity_page.dart';
@@ -26,7 +27,7 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     pageController = PageController();
     super.initState();
-    // BlocProvider.of<GetSingleUserCubit>(context).getSingleUser(uid: widget.uid);
+    BlocProvider.of<GetSingleUserCubit>(context).getSingleUser(uid: widget.uid);
   }
 
   @override
@@ -47,81 +48,53 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backGroundColor,
-      bottomNavigationBar: CupertinoTabBar(
-        backgroundColor: backGroundColor,
-        items: [
-          BottomNavigationBarItem(
-              icon: Image.asset(
-            'assets/hut.png',
-            color: primaryColor,
-            height: 20,
-          )),
-          const BottomNavigationBarItem(icon: Icon(Icons.search_sharp)),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline_sharp)),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_outline_sharp)),
-          const BottomNavigationBarItem(icon: Icon(Icons.account_circle_sharp)),
-        ],
-        onTap: navigationTapped,
-      ),
-      body: PageView(
-        controller: pageController,
-        onPageChanged: onPageChanged,
-        children: const [
-          HomePage(),
-          SearchPage(),
-          UploadPostPage(),
-          ActivityPage(),
-          ProfilePage()
-        ],
-      ),
+    return BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
+      builder: (context, getSingleUserState) {
+        if (getSingleUserState is GetSingleUserLoaded) {
+          Fluttertoast.showToast(msg: 'User Loaded');
+          print('User Loaded');
+          final currentUser = getSingleUserState.user;
+          return Scaffold(
+            backgroundColor: backGroundColor,
+            bottomNavigationBar: CupertinoTabBar(
+              backgroundColor: backGroundColor,
+              items: [
+                BottomNavigationBarItem(
+                    icon: Image.asset(
+                  'assets/hut.png',
+                  color: primaryColor,
+                  height: 20,
+                )),
+                const BottomNavigationBarItem(icon: Icon(Icons.search_sharp)),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.add_circle_outline_sharp)),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.favorite_outline_sharp)),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.account_circle_sharp)),
+              ],
+              onTap: navigationTapped,
+            ),
+            body: PageView(
+              controller: pageController,
+              onPageChanged: onPageChanged,
+              children: [
+                const HomePage(),
+                const SearchPage(),
+                const UploadPostPage(),
+                const ActivityPage(),
+                ProfilePage(
+                  currentUser: currentUser,
+                )
+              ],
+            ),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
-
-    //   BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
-    //   builder: (context, getSingleUserState) {
-    //     if (getSingleUserState is GetSingleUserLoaded) {
-    //       return Scaffold(
-    //         backgroundColor: backGroundColor,
-    //         bottomNavigationBar: CupertinoTabBar(
-    //           backgroundColor: backGroundColor,
-    //           items: [
-    //             BottomNavigationBarItem(
-    //                 icon: Image.asset(
-    //               'assets/hut.png',
-    //               color: primaryColor,
-    //               height: 20,
-    //             )),
-    //             const BottomNavigationBarItem(icon: Icon(Icons.search_sharp)),
-    //             const BottomNavigationBarItem(
-    //                 icon: Icon(Icons.add_circle_outline_sharp)),
-    //             const BottomNavigationBarItem(
-    //                 icon: Icon(Icons.favorite_outline_sharp)),
-    //             const BottomNavigationBarItem(
-    //                 icon: Icon(Icons.account_circle_sharp)),
-    //           ],
-    //           onTap: navigationTapped,
-    //         ),
-    //         body: PageView(
-    //           controller: pageController,
-    //           onPageChanged: onPageChanged,
-    //           children: const [
-    //             HomePage(),
-    //             SearchPage(),
-    //             UploadPostPage(),
-    //             ActivityPage(),
-    //             ProfilePage()
-    //           ],
-    //         ),
-    //       );
-    //     }
-    //
-    //     return const Center(
-    //       child: CircularProgressIndicator(),
-    //     );
-    //   },
-    // );
   }
 }

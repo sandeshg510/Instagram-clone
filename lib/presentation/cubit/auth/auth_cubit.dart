@@ -25,6 +25,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (isSignIn == true) {
         final uid = await getCurrentUidUseCase.call();
         emit(Authenticated(uid: uid));
+        print('App started function was performed');
       } else {
         emit(UnAuthenticated());
       }
@@ -37,6 +38,8 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final uid = await getCurrentUidUseCase.call();
       emit(Authenticated(uid: uid));
+      print('uid');
+      print('Logged in was performed');
     } catch (_) {
       emit(UnAuthenticated());
     }
