@@ -13,10 +13,11 @@ class ProfileFormWidget extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(color: secondaryColor, fontSize: 16),
+          style: const TextStyle(color: primaryColor, fontSize: 16),
         ),
         // sizedBoxVer(10),
         TextFormField(
+          style: const TextStyle(color: secondaryColor),
           controller: controller,
           decoration:
               const InputDecoration(labelStyle: TextStyle(color: primaryColor)),

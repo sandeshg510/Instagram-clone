@@ -52,7 +52,6 @@ class _MainPageState extends State<MainPage> {
       builder: (context, getSingleUserState) {
         if (getSingleUserState is GetSingleUserLoaded) {
           Fluttertoast.showToast(msg: 'User Loaded');
-          print('User Loaded');
           final currentUser = getSingleUserState.user;
           return Scaffold(
             backgroundColor: backGroundColor,

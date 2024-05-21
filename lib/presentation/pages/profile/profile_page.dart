@@ -136,7 +136,8 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.pushNamed(context, PageConst.editProfilePage);
+                      Navigator.pushNamed(context, PageConst.editProfilePage,
+                          arguments: currentUser);
                       // Navigator.push(
                       //     context,
                       //     MaterialPageRoute(
@@ -208,10 +209,8 @@ class ProfilePage extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EditProfilePage()));
+                    Navigator.pushNamed(context, PageConst.editProfilePage,
+                        arguments: currentUser);
                   },
                   child: const Padding(
                     padding: EdgeInsets.only(
