@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
-import 'package:instagram_clone/presentation/pages/post/comment/comment_page.dart';
-
+import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
+import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
+import 'package:instagram_clone/presentation/pages/home/widgets/single_post_card_widget.dart';
+import 'package:instagram_clone/injection_container.dart' as di;
 import '../post/update_post_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -37,120 +41,27 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      height: 30,
-                      width: 30,
-                      decoration: const BoxDecoration(
-                          color: secondaryColor, shape: BoxShape.circle),
-                    ),
-                    sizedBoxHor(size.width * 0.027),
-                    const Text(
-                      'username and',
-                      style: TextStyle(color: primaryColor),
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _openBottomModelSheet(context);
-                  },
-                  child: const Icon(
-                    Icons.more_vert,
-                    color: primaryColor,
-                  ),
-                )
-              ],
-            ),
-            sizedBoxVer(12),
-            Container(
-              height: size.height * 0.3,
-              width: double.infinity,
-              color: secondaryColor,
-            ),
-            sizedBoxVer(15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    sizedBoxHor(15),
-                    Image.asset(
-                      'assets/heart.png',
-                      color: secondaryColor,
-                      height: 22,
-                    ),
-                    sizedBoxHor(15),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, PageConst.commentPage);
-                      },
-                      child: Image.asset(
-                        'assets/chat.png',
-                        color: secondaryColor,
-                        height: 20,
-                      ),
-                    ),
-                    sizedBoxHor(15),
-                    Image.asset(
-                      'assets/send.png',
-                      color: secondaryColor,
-                      height: 20,
-                    ),
-                  ],
-                ),
-                Image.asset(
-                  'assets/bookmark.png',
-                  color: secondaryColor,
-                  height: 20,
-                ),
-              ],
-            ),
-            sizedBoxVer(10),
-            const Text(
-              '1 likes',
-              style:
-                  TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
-            ),
-            Row(
-              children: [
-                Row(
-                  children: [
-                    const Text(
-                      'Username',
-                      style: TextStyle(
-                          color: primaryColor, fontWeight: FontWeight.bold),
-                    ),
-                    sizedBoxHor(10),
-                    const Text(
-                      'some description',
-                      style: TextStyle(color: primaryColor),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            sizedBoxVer(10),
-            const Text(
-              'view all 10 comments',
-              style: TextStyle(color: darkGreyColor),
-            ),
-            sizedBoxVer(10),
-            const Text(
-              '20/01/2024',
-              style: TextStyle(color: darkGreyColor),
-            ),
-          ],
+      body: BlocProvider(
+        create: (context) => di.sl<PostCubit>()..getPosts(post: PostEntity()),
+        child: BlocBuilder<PostCubit, PostState>(
+          builder: (context, postState) {
+            if (postState is PostLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (postState is PostFailure) {
+              Fluttertoast.showToast(
+                  msg: 'some failure occurred while creating the post');
+            }
+            if (postState is PostLoaded) {
+              return ListView.builder(
+                  itemCount: postState.posts.length,
+                  itemBuilder: (context, index) {
+                    final post = postState.posts[index];
+                    return SinglePostCardWidget(post: post);
+                  });
+            }
+            return const Center(child: CircularProgressIndicator());
+          },
         ),
       ),
     );

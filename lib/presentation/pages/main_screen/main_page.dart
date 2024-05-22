@@ -80,11 +80,9 @@ class _MainPageState extends State<MainPage> {
               children: [
                 const HomePage(),
                 const SearchPage(),
-                const UploadPostPage(),
+                UploadPostPage(currentUser: currentUser),
                 const ActivityPage(),
-                ProfilePage(
-                  currentUser: currentUser,
-                )
+                ProfilePage(currentUser: currentUser)
               ],
             ),
           );
