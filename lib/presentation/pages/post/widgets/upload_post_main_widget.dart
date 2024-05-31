@@ -100,7 +100,7 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
                   sizedBoxVer(10),
                   Text(
                     '${widget.currentUser.username}',
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   sizedBoxVer(10),
                   Container(
@@ -172,6 +172,7 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
       _isUploading = false;
       _descriptionController.clear();
       _image = null;
+      Fluttertoast.showToast(msg: 'Post uploaded successfully');
     });
   }
 

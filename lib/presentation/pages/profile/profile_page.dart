@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import 'package:instagram_clone/presentation/cubit/auth/auth_cubit.dart';
-import 'package:instagram_clone/presentation/pages/profile/edit_profile_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/widgets/profile_option_widget.dart';
 import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 

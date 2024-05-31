@@ -1,13 +1,44 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:instagram_clone/domain/app_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
+import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
+import 'package:instagram_clone/presentation/pages/post/widgets/like_animation_widget.dart';
 import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:instagram_clone/injection_container.dart' as di;
 
 import '../../../../consts.dart';
 
-class SinglePostCardWidget extends StatelessWidget {
+class SinglePostCardWidget extends StatefulWidget {
   final PostEntity post;
   const SinglePostCardWidget({super.key, required this.post});
+
+  @override
+  State<SinglePostCardWidget> createState() => _SinglePostCardWidgetState();
+}
+
+class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
+  String _currentUid = '';
+
+  @override
+  void initState() {
+    setState(() {
+      di.sl<GetCurrentUidUseCase>().call().then((value) {
+        setState(() {
+          _currentUid = value;
+        });
+      });
+    });
+    super.initState();
+  }
+
+  bool _isLikeAnimating = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,19 +60,20 @@ class SinglePostCardWidget extends StatelessWidget {
                     width: 30,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
-                      child: profileWidget(imageUrl: post.userProfileUrl),
+                      child:
+                          profileWidget(imageUrl: widget.post.userProfileUrl),
                     ),
                   ),
                   sizedBoxHor(size.width * 0.027),
                   Text(
-                    '${post.username}',
+                    '${widget.post.username}',
                     style: const TextStyle(color: primaryColor),
                   ),
                 ],
               ),
               GestureDetector(
                 onTap: () {
-                  _openBottomModelSheet(context, post);
+                  _openBottomModelSheet(context, widget.post);
                 },
                 child: const Icon(
                   Icons.more_vert,
@@ -51,10 +83,40 @@ class SinglePostCardWidget extends StatelessWidget {
             ],
           ),
           sizedBoxVer(12),
-          Container(
-            height: size.height * 0.3,
-            width: double.infinity,
-            child: profileWidget(imageUrl: post.postImageUrl),
+          GestureDetector(
+            onDoubleTap: () {
+              _likePost();
+              setState(() {
+                _isLikeAnimating = true;
+              });
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  height: size.height * 0.3,
+                  width: double.infinity,
+                  child: profileWidget(imageUrl: widget.post.postImageUrl),
+                ),
+                AnimatedOpacity(
+                  opacity: _isLikeAnimating ? 1 : 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: LikeAnimationWidget(
+                      duration: const Duration(milliseconds: 300),
+                      isLikeAnimating: _isLikeAnimating,
+                      onLikeFinish: () {
+                        setState(() {
+                          _isLikeAnimating = false;
+                        });
+                      },
+                      child: const Icon(
+                        CupertinoIcons.suit_heart_fill,
+                        size: 100,
+                        color: primaryColor,
+                      )),
+                ),
+              ],
+            ),
           ),
           sizedBoxVer(15),
           Row(
@@ -62,16 +124,29 @@ class SinglePostCardWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  sizedBoxHor(15),
-                  Image.asset(
-                    'assets/heart.png',
-                    color: secondaryColor,
-                    height: 22,
-                  ),
+                  sizedBoxHor(5),
+                  widget.post.likes!.contains(_currentUid)
+                      ? GestureDetector(
+                          onTap: _likePost,
+                          child: Image.asset(
+                            'assets/red-heart-11121.png',
+                            height: 22,
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: _likePost,
+                          child: Image.asset(
+                            'assets/heart.png',
+                            color: secondaryColor,
+                            height: 22,
+                          ),
+                        ),
                   sizedBoxHor(15),
                   InkWell(
                     onTap: () {
-                      Navigator.pushNamed(context, PageConst.commentPage);
+                      Navigator.pushNamed(context, PageConst.commentPage,
+                          arguments: AppEntity(
+                              uid: _currentUid, postId: widget.post.postId));
                     },
                     child: Image.asset(
                       'assets/chat.png',
@@ -96,7 +171,7 @@ class SinglePostCardWidget extends StatelessWidget {
           ),
           sizedBoxVer(10),
           Text(
-            '${post.totalLikes} likes',
+            '${widget.post.totalLikes} likes',
             style: const TextStyle(
                 color: primaryColor, fontWeight: FontWeight.bold),
           ),
@@ -105,13 +180,13 @@ class SinglePostCardWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '${post.username}',
+                    '${widget.post.username}',
                     style: const TextStyle(
                         color: primaryColor, fontWeight: FontWeight.bold),
                   ),
                   sizedBoxHor(10),
                   Text(
-                    '${post.description}',
+                    '${widget.post.description}',
                     style: const TextStyle(color: primaryColor),
                   ),
                 ],
@@ -119,13 +194,20 @@ class SinglePostCardWidget extends StatelessWidget {
             ],
           ),
           sizedBoxVer(10),
-          Text(
-            'view all ${post.totalComments} comments',
-            style: const TextStyle(color: darkGreyColor),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, PageConst.commentPage,
+                  arguments:
+                      AppEntity(uid: _currentUid, postId: widget.post.postId));
+            },
+            child: Text(
+              'view all ${widget.post.totalComments} comments',
+              style: const TextStyle(color: darkGreyColor),
+            ),
           ),
           sizedBoxVer(10),
           Text(
-            DateFormat('dd/MMM/yyy ').format(post.createAt!.toDate()),
+            DateFormat('dd/MMM/yyy ').format(widget.post.createAt!.toDate()),
             style: const TextStyle(color: darkGreyColor),
           ),
         ],
@@ -166,7 +248,7 @@ class SinglePostCardWidget extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: _deletePost,
                   child: const Padding(
                     padding: EdgeInsets.only(
                         right: 230, left: 30, bottom: 15, top: 10),
@@ -194,5 +276,18 @@ class SinglePostCardWidget extends StatelessWidget {
             ),
           ));
         });
+  }
+
+  _deletePost() {
+    BlocProvider.of<PostCubit>(context)
+        .deletePosts(post: PostEntity(postId: widget.post.postId));
+
+    Navigator.pop(context);
+    Fluttertoast.showToast(msg: 'Post deleted successfully');
+  }
+
+  _likePost() {
+    BlocProvider.of<PostCubit>(context)
+        .likePosts(post: PostEntity(postId: widget.post.postId));
   }
 }

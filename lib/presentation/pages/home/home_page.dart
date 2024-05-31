@@ -9,7 +9,6 @@ import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
 import 'package:instagram_clone/presentation/pages/home/widgets/single_post_card_widget.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
-import '../post/update_post_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -53,12 +52,17 @@ class HomePage extends StatelessWidget {
                   msg: 'some failure occurred while creating the post');
             }
             if (postState is PostLoaded) {
-              return ListView.builder(
-                  itemCount: postState.posts.length,
-                  itemBuilder: (context, index) {
-                    final post = postState.posts[index];
-                    return SinglePostCardWidget(post: post);
-                  });
+              return postState.posts.isEmpty
+                  ? _noPostsYetWidget()
+                  : ListView.builder(
+                      itemCount: postState.posts.length,
+                      itemBuilder: (context, index) {
+                        final post = postState.posts[index];
+                        return BlocProvider(
+                          create: (context) => di.sl<PostCubit>(),
+                          child: SinglePostCardWidget(post: post),
+                        );
+                      });
             }
             return const Center(child: CircularProgressIndicator());
           },
@@ -127,5 +131,15 @@ class HomePage extends StatelessWidget {
             ),
           ));
         });
+  }
+
+  _noPostsYetWidget() {
+    return const Center(
+      child: Text(
+        'No posts yet',
+        style: TextStyle(
+            fontSize: 18, fontWeight: FontWeight.bold, color: primaryColor),
+      ),
+    );
   }
 }

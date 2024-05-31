@@ -4,8 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/data/data_sources/remote_data_sources/remote_data_sources.dart';
+import 'package:instagram_clone/data/models/comment/comment_model.dart';
 import 'package:instagram_clone/data/models/posts/post_model.dart';
 import 'package:instagram_clone/data/models/user/user_model.dart';
+import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -291,5 +293,128 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       postInfo['postImageUrl'] = post.postImageUrl;
 
     postCollection.doc(post.postId).update(postInfo);
+  }
+
+  @override
+  Future<void> createComment(CommentEntity comment) async {
+    final commentCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .doc(comment.postId)
+        .collection(FirebaseConst.comments);
+
+    final newComment = CommentModel(
+      commentId: comment.commentId,
+      postId: comment.postId,
+      description: comment.description,
+      username: comment.username,
+      userProfileUrl: comment.userProfileUrl,
+      createAt: comment.createAt,
+      likes: [],
+      totalReplies: comment.totalReplies,
+      creatorUid: comment.creatorUid,
+    ).toJson();
+
+    try {
+      final commentDocRef =
+          await commentCollection.doc(comment.commentId).get();
+
+      if (!commentDocRef.exists) {
+        commentCollection.doc(comment.commentId).set(newComment).then((value) {
+          final postCollection = firebaseFirestore
+              .collection(FirebaseConst.posts)
+              .doc(comment.postId);
+          postCollection.get().then((value) {
+            if (value.exists) {
+              final totalComments = value.get('totalComments');
+
+              postCollection.update({'totalComments': totalComments + 1});
+              return;
+            }
+          });
+        });
+      } else {
+        commentCollection.doc(comment.commentId).update(newComment);
+      }
+    } catch (e) {
+      print('some error occurred $e');
+    }
+  }
+
+  @override
+  Future<void> deleteComment(CommentEntity comment) async {
+    final commentCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .doc(comment.postId)
+        .collection(FirebaseConst.comments);
+
+    try {
+      commentCollection.doc(comment.commentId).delete().then((value) {
+        final postCollection = firebaseFirestore
+            .collection(FirebaseConst.posts)
+            .doc(comment.postId);
+        postCollection.get().then((value) {
+          if (value.exists) {
+            final totalComments = value.get('totalComments');
+
+            postCollection.update({'totalComments': totalComments - 1});
+            return;
+          }
+        });
+      });
+    } catch (e) {
+      print('some error occurred $e');
+    }
+  }
+
+  @override
+  Future<void> likeComment(CommentEntity comment) async {
+    final commentCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .doc(comment.postId)
+        .collection(FirebaseConst.comments);
+    final currentUid = await getCurrentUid();
+
+    final commentRef = await commentCollection.doc(comment.commentId).get();
+
+    if (commentRef.exists) {
+      List likes = commentRef.get('likes');
+
+      if (likes.contains(currentUid)) {
+        commentCollection.doc(comment.commentId).update({
+          'likes': FieldValue.arrayRemove([likes])
+        });
+      } else {
+        commentCollection.doc(comment.commentId).update({
+          'likes': FieldValue.arrayUnion([likes])
+        });
+      }
+    }
+  }
+
+  @override
+  Stream<List<CommentEntity>> readComments(String postId) {
+    final commentCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .doc(postId)
+        .collection(FirebaseConst.comments)
+        .orderBy('createAt', descending: true);
+
+    return commentCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => CommentModel.fromSnapshot(e)).toList());
+  }
+
+  @override
+  Future<void> updateComment(CommentEntity comment) async {
+    final commentCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .doc(comment.postId)
+        .collection(FirebaseConst.comments);
+
+    Map<String, dynamic> commentInfo = Map();
+
+    if (comment.description != '' && comment.description != null) {
+      commentInfo['description'] = comment.description;
+    }
+    commentCollection.doc(comment.commentId).update(commentInfo);
   }
 }
