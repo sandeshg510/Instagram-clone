@@ -4,6 +4,8 @@ import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 
+import '../entities/comment/reply/reply_entity.dart';
+
 abstract class FirebaseRepository {
   //Credential Features
   Future<void> signInUser(UserEntity user);
@@ -26,6 +28,7 @@ abstract class FirebaseRepository {
   //Posts Features
   Future<void> createPost(PostEntity post);
   Stream<List<PostEntity>> readPosts(PostEntity post);
+  Stream<List<PostEntity>> readSinglePost(String postId);
   Future<void> updatePost(PostEntity post);
   Future<void> deletePost(PostEntity post);
   Future<void> likePost(PostEntity post);
@@ -36,4 +39,11 @@ abstract class FirebaseRepository {
   Future<void> updateComment(CommentEntity comment);
   Future<void> deleteComment(CommentEntity comment);
   Future<void> likeComment(CommentEntity comment);
+
+  //Reply Features
+  Future<void> createReply(ReplyEntity reply);
+  Stream<List<ReplyEntity>> readReplies(ReplyEntity reply);
+  Future<void> updateReply(ReplyEntity reply);
+  Future<void> deleteReply(ReplyEntity reply);
+  Future<void> likeReply(ReplyEntity reply);
 }

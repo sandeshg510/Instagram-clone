@@ -7,12 +7,11 @@ import 'package:instagram_clone/domain/app_entity.dart';
 import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import 'package:instagram_clone/presentation/cubit/comment/comment_cubit.dart';
-import 'package:instagram_clone/presentation/cubit/comment/reply/reply_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/post/get_single_post/get_single_post_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:instagram_clone/presentation/pages/post/comment/widgets/single_comment_widget.dart';
 import 'package:uuid/uuid.dart';
-import 'package:instagram_clone/injection_container.dart' as di;
+
 import '../../../../widgets/profile_widget.dart';
 
 class CommentMainWidget extends StatefulWidget {
@@ -123,23 +122,19 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
                                 itemBuilder: (BuildContext context, int index) {
                                   final singleComment =
                                       commentState.comments[index];
-                                  return BlocProvider(
-                                    create: (context) => di.sl<ReplyCubit>(),
-                                    child: SingleCommentWidget(
-                                        comment: singleComment,
-                                        currentUser: singleUser,
-                                        onLikeClickedListener: () {
-                                          _likeComment(
-                                              comment:
-                                                  commentState.comments[index]);
-                                        },
-                                        onLongPressListener: () {
-                                          _openBottomModelSheet(
-                                              context: context,
-                                              comment:
-                                                  commentState.comments[index]);
-                                        }),
-                                  );
+                                  return SingleCommentWidget(
+                                      comment: singleComment,
+                                      onLikeClickedListener: () {
+                                        _likeComment(
+                                            comment:
+                                                commentState.comments[index]);
+                                      },
+                                      onLongPressListener: () {
+                                        _openBottomModelSheet(
+                                            context: context,
+                                            comment:
+                                                commentState.comments[index]);
+                                      });
                                 },
                               ),
                             ),

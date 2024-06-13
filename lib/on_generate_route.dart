@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/domain/app_entity.dart';
+import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/comment/update_comment_usecase.dart';
 import 'package:instagram_clone/presentation/pages/credential/login_page.dart';
 import 'package:instagram_clone/presentation/pages/credential/sign_up_page.dart';
 import 'package:instagram_clone/presentation/pages/post/comment/comment_page.dart';
+import 'package:instagram_clone/presentation/pages/post/comment/edit_comment_page.dart';
 import 'package:instagram_clone/presentation/pages/post/update_post_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/edit_profile_page.dart';
 
@@ -30,6 +33,16 @@ class OnGenerateRoute {
           if (args is PostEntity) {
             return routeBuilder(
               UpdatePostPage(post: args),
+            );
+          } else {
+            return routeBuilder(const NoPageFound());
+          }
+        }
+      case PageConst.updateCommentPage:
+        {
+          if (args is CommentEntity) {
+            return routeBuilder(
+              EditCommentPage(comment: args),
             );
           } else {
             return routeBuilder(const NoPageFound());

@@ -8,10 +8,13 @@ import 'package:instagram_clone/data/models/comment/comment_model.dart';
 import 'package:instagram_clone/data/models/posts/post_model.dart';
 import 'package:instagram_clone/data/models/user/user_model.dart';
 import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
+import 'package:instagram_clone/domain/entities/comment/reply/reply_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../models/comment/reply/reply_model.dart';
 
 class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   final FirebaseFirestore firebaseFirestore;
@@ -282,6 +285,17 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
+  Stream<List<PostEntity>> readSinglePost(String postId) {
+    final postCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .orderBy('createAt', descending: true)
+        .where('postId', isEqualTo: postId);
+
+    return postCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => PostModel.fromSnapshot(e)).toList());
+  }
+
+  @override
   Future<void> updatePost(PostEntity post) async {
     final postCollection = firebaseFirestore.collection(FirebaseConst.posts);
 
@@ -381,11 +395,11 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
       if (likes.contains(currentUid)) {
         commentCollection.doc(comment.commentId).update({
-          'likes': FieldValue.arrayRemove([likes])
+          'likes': FieldValue.arrayRemove([currentUid])
         });
       } else {
         commentCollection.doc(comment.commentId).update({
-          'likes': FieldValue.arrayUnion([likes])
+          'likes': FieldValue.arrayUnion([currentUid])
         });
       }
     }
@@ -416,5 +430,112 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       commentInfo['description'] = comment.description;
     }
     commentCollection.doc(comment.commentId).update(commentInfo);
+  }
+
+  @override
+  Future<void> createReply(ReplyEntity reply) async {
+    final replyCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .doc(reply.postId)
+        .collection(FirebaseConst.comments)
+        .doc(reply.commentId)
+        .collection(FirebaseConst.reply);
+
+    final newReply = ReplyModel(
+      commentId: reply.commentId,
+      postId: reply.postId,
+      description: reply.description,
+      username: reply.username,
+      userProfileUrl: reply.userProfileUrl,
+      createAt: reply.createAt,
+      likes: [],
+      replyId: reply.replyId,
+      creatorUid: reply.creatorUid,
+    ).toJson();
+
+    try {
+      final replyDocRef = await replyCollection.doc(reply.replyId).get();
+
+      if (!replyDocRef.exists) {
+        replyCollection.doc(reply.replyId).set(newReply);
+      } else {
+        replyCollection.doc(reply.replyId).update(newReply);
+      }
+    } catch (e) {
+      print('Some error occurred $e');
+    }
+  }
+
+  @override
+  Future<void> deleteReply(ReplyEntity reply) async {
+    final replyCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .doc(reply.postId)
+        .collection(FirebaseConst.comments)
+        .doc(reply.commentId)
+        .collection(FirebaseConst.reply);
+
+    try {
+      replyCollection.doc(reply.replyId).delete();
+    } catch (e) {
+      print('Some error occurred $e');
+    }
+  }
+
+  @override
+  Future<void> likeReply(ReplyEntity reply) async {
+    final replyCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .doc(reply.postId)
+        .collection(FirebaseConst.comments)
+        .doc(reply.commentId)
+        .collection(FirebaseConst.reply);
+
+    final currentUid = await getCurrentUid();
+
+    final replyRef = await replyCollection.doc(reply.replyId).get();
+
+    if (replyRef.exists) {
+      List likes = replyRef.get('likes');
+      if (likes.contains(currentUid)) {
+        replyCollection.doc(reply.replyId).update({
+          'likes': FieldValue.arrayRemove([currentUid])
+        });
+      } else {
+        replyCollection.doc(reply.replyId).update({
+          'likes': FieldValue.arrayUnion([currentUid])
+        });
+      }
+    }
+  }
+
+  @override
+  Stream<List<ReplyEntity>> readReplies(ReplyEntity reply) {
+    final replyCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .doc(reply.postId)
+        .collection(FirebaseConst.comments)
+        .doc(reply.commentId)
+        .collection(FirebaseConst.reply);
+
+    return replyCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => ReplyModel.fromSnapshot(e)).toList());
+  }
+
+  @override
+  Future<void> updateReply(ReplyEntity reply) async {
+    final replyCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .doc(reply.postId)
+        .collection(FirebaseConst.comments)
+        .doc(reply.commentId)
+        .collection(FirebaseConst.reply);
+
+    Map<String, dynamic> replyInfo = Map();
+
+    if (reply.description != '' && reply.description != null) {
+      replyInfo['description'] = reply.description;
+    }
+    replyCollection.doc(reply.replyId).update(replyInfo);
   }
 }

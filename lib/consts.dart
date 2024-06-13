@@ -22,6 +22,7 @@ class PageConst {
   static const String commentPage = 'commentPage';
   static const String loginPage = 'loginPage';
   static const String signUpPage = 'signUpPage';
+  static const String updateCommentPage = 'updateCommentPage';
 }
 
 class FirebaseConst {
@@ -29,4 +30,5 @@ class FirebaseConst {
   static const String posts = 'posts';
   static const String comments = 'comments';
   static const String replies = 'replies';
+  static const String reply = 'reply';
 }
