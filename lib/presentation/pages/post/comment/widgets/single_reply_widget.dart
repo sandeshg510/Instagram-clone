@@ -55,7 +55,9 @@ class _SingleReplyWidgetState extends State<SingleReplyWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         InkWell(
-          onLongPress: widget.onLongPressListener,
+          onLongPress: widget.reply.creatorUid == _currentUid
+              ? widget.onLongPressListener
+              : null,
           child: Padding(
             padding: const EdgeInsets.only(left: 1.0, top: 20),
             child: Row(

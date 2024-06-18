@@ -1,19 +1,18 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:instagram_clone/domain/app_entity.dart';
-import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
-import 'package:instagram_clone/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
-import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
-import 'package:instagram_clone/presentation/pages/post/widgets/like_animation_widget.dart';
-import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 import 'package:intl/intl.dart';
-import 'package:instagram_clone/injection_container.dart' as di;
 
 import '../../../../consts.dart';
+import '../../../../domain/app_entity.dart';
+import '../../../../domain/entities/posts/post_entity.dart';
+import '../../../../domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
+import 'package:instagram_clone/injection_container.dart' as di;
+
+import '../../../cubit/post/post_cubit.dart';
+import '../../../widgets/profile_widget.dart';
+import '../../post/widgets/like_animation_widget.dart';
 
 class SinglePostCardWidget extends StatefulWidget {
   final PostEntity post;
@@ -24,65 +23,70 @@ class SinglePostCardWidget extends StatefulWidget {
 }
 
 class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
-  String _currentUid = '';
+  String _currentUid = "";
 
   @override
   void initState() {
-    setState(() {
-      di.sl<GetCurrentUidUseCase>().call().then((value) {
-        setState(() {
-          _currentUid = value;
-        });
+    di.sl<GetCurrentUidUseCase>().call().then((value) {
+      setState(() {
+        _currentUid = value;
       });
     });
     super.initState();
   }
 
   bool _isLikeAnimating = false;
-
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.sizeOf(context);
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    height: 30,
-                    width: 30,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child:
-                          profileWidget(imageUrl: widget.post.userProfileUrl),
-                    ),
-                  ),
-                  sizedBoxHor(size.width * 0.027),
-                  Text(
-                    '${widget.post.username}',
-                    style: const TextStyle(color: primaryColor),
-                  ),
-                ],
-              ),
               GestureDetector(
                 onTap: () {
-                  _openBottomModelSheet(context, widget.post);
+                  Navigator.pushNamed(context, PageConst.singleUserProfilePage,
+                      arguments: widget.post.creatorUid);
                 },
-                child: const Icon(
-                  Icons.more_vert,
-                  color: primaryColor,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: profileWidget(
+                            imageUrl: "${widget.post.userProfileUrl}"),
+                      ),
+                    ),
+                    sizedBoxHor(10),
+                    Text(
+                      "${widget.post.username}",
+                      style: const TextStyle(
+                          color: primaryColor, fontWeight: FontWeight.bold),
+                    )
+                  ],
                 ),
-              )
+              ),
+              widget.post.creatorUid == _currentUid
+                  ? GestureDetector(
+                      onTap: () {
+                        _openBottomModelSheet(context, widget.post);
+                      },
+                      child: const Icon(
+                        Icons.more_vert,
+                        color: primaryColor,
+                      ))
+                  : const SizedBox(
+                      width: 0,
+                      height: 0,
+                    )
             ],
           ),
-          sizedBoxVer(12),
+          sizedBoxVer(10),
           GestureDetector(
             onDoubleTap: () {
               _likePost();
@@ -93,14 +97,14 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Container(
-                  height: size.height * 0.3,
+                SizedBox(
                   width: double.infinity,
-                  child: profileWidget(imageUrl: widget.post.postImageUrl),
+                  height: MediaQuery.of(context).size.height * 0.30,
+                  child: profileWidget(imageUrl: "${widget.post.postImageUrl}"),
                 ),
                 AnimatedOpacity(
-                  opacity: _isLikeAnimating ? 1 : 0,
                   duration: const Duration(milliseconds: 200),
+                  opacity: _isLikeAnimating ? 1 : 0,
                   child: LikeAnimationWidget(
                       duration: const Duration(milliseconds: 300),
                       isLikeAnimating: _isLikeAnimating,
@@ -118,7 +122,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
               ],
             ),
           ),
-          sizedBoxVer(15),
+          sizedBoxVer(10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -291,3 +295,174 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
         .likePosts(post: PostEntity(postId: widget.post.postId));
   }
 }
+
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               Row(
+//                 children: [
+//                   GestureDetector(
+//                       onTap: _likePost,
+//                       child: Icon(
+//                         widget.post.likes!.contains(_currentUid)
+//                             ? Icons.favorite
+//                             : Icons.favorite_outline,
+//                         color: widget.post.likes!.contains(_currentUid)
+//                             ? Colors.red
+//                             : primaryColor,
+//                       )),
+//                   sizedBoxHor(10),
+//                   GestureDetector(
+//                       onTap: () {
+//                         Navigator.pushNamed(context, PageConst.commentPage,
+//                             arguments: AppEntity(
+//                                 uid: _currentUid, postId: widget.post.postId));
+//                         //Navigator.push(context, MaterialPageRoute(builder: (context) => CommentPage()));
+//                       },
+//                       child: const Icon(
+//                         Icons.message,
+//                         color: primaryColor,
+//                       )),
+//                   sizedBoxHor(10),
+//                   const Icon(
+//                     Icons.send,
+//                     color: primaryColor,
+//                   ),
+//                 ],
+//               ),
+//               const Icon(
+//                 Icons.bookmark_border,
+//                 color: primaryColor,
+//               )
+//             ],
+//           ),
+//           sizedBoxVer(10),
+//           Text(
+//             "${widget.post.totalLikes} likes",
+//             style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+//           ),
+//           sizedBoxVer(10),
+//           Row(
+//             children: [
+//               Text(
+//                 "${widget.post.username}",
+//                 style:
+//                     TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+//               ),
+//               sizedBoxVer(10),
+//               Text(
+//                 "${widget.post.description}",
+//                 style: TextStyle(color: primaryColor),
+//               ),
+//             ],
+//           ),
+//           sizedBoxVer(10),
+//           GestureDetector(
+//               onTap: () {
+//                 Navigator.pushNamed(context, PageConst.commentPage,
+//                     arguments: AppEntity(
+//                         uid: _currentUid, postId: widget.post.postId));
+//               },
+//               child: Text(
+//                 "View all ${widget.post.totalComments} comments",
+//                 style: TextStyle(color: darkGreyColor),
+//               )),
+//           sizedBoxVer(10),
+//           Text(
+//             "${DateFormat("dd/MMM/yyy").format(widget.post.createAt!.toDate())}",
+//             style: TextStyle(color: darkGreyColor),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   _openBottomModalSheet(BuildContext context, PostEntity post) {
+//     return showModalBottomSheet(
+//         context: context,
+//         builder: (context) {
+//           return Container(
+//             height: 150,
+//             decoration: BoxDecoration(color: backGroundColor.withOpacity(.8)),
+//             child: SingleChildScrollView(
+//               child: Container(
+//                 margin: EdgeInsets.symmetric(vertical: 10),
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Padding(
+//                       padding: const EdgeInsets.only(left: 10.0),
+//                       child: Text(
+//                         "More Options",
+//                         style: TextStyle(
+//                             fontWeight: FontWeight.bold,
+//                             fontSize: 18,
+//                             color: primaryColor),
+//                       ),
+//                     ),
+//                     SizedBox(
+//                       height: 8,
+//                     ),
+//                     Divider(
+//                       thickness: 1,
+//                       color: secondaryColor,
+//                     ),
+//                     SizedBox(
+//                       height: 8,
+//                     ),
+//                     Padding(
+//                       padding: const EdgeInsets.only(left: 10.0),
+//                       child: GestureDetector(
+//                         onTap: _deletePost,
+//                         child: Text(
+//                           "Delete Post",
+//                           style: TextStyle(
+//                               fontWeight: FontWeight.w500,
+//                               fontSize: 16,
+//                               color: primaryColor),
+//                         ),
+//                       ),
+//                     ),
+//                     sizedBoxVer(7),
+//                     Divider(
+//                       thickness: 1,
+//                       color: secondaryColor,
+//                     ),
+//                     sizedBoxVer(7),
+//                     Padding(
+//                       padding: const EdgeInsets.only(left: 10.0),
+//                       child: GestureDetector(
+//                         onTap: () {
+//                           Navigator.pushNamed(context, PageConst.updatePostPage,
+//                               arguments: post);
+//
+//                           // Navigator.push(context, MaterialPageRoute(builder: (context) => UpdatePostPage()));
+//                         },
+//                         child: Text(
+//                           "Update Post",
+//                           style: TextStyle(
+//                               fontWeight: FontWeight.w500,
+//                               fontSize: 16,
+//                               color: primaryColor),
+//                         ),
+//                       ),
+//                     ),
+//                     sizedBoxVer(7),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           );
+//         });
+//   }
+//
+//   _deletePost() {
+//     BlocProvider.of<PostCubit>(context)
+//         .deletePosts(post: PostEntity(postId: widget.post.postId));
+//   }
+//
+//   _likePost() {
+//     BlocProvider.of<PostCubit>(context)
+//         .likePosts(post: PostEntity(postId: widget.post.postId));
+//   }
+// }

@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/firebase_options.dart';
 import 'package:instagram_clone/presentation/cubit/auth/auth_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/credential/credential_cubit.dart';
+import 'package:instagram_clone/presentation/cubit/post/get_single_post/get_single_post_cubit.dart';
+import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
+import 'package:instagram_clone/presentation/cubit/user/get_single_other_user/get_single_other_user_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/user_cubit.dart';
 import 'package:instagram_clone/presentation/pages/credential/login_page.dart';
@@ -30,6 +33,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<CredentialCubit>()),
         BlocProvider(create: (_) => di.sl<UserCubit>()),
         BlocProvider(create: (_) => di.sl<GetSingleUserCubit>()),
+        BlocProvider(create: (_) => di.sl<GetSinglePostCubit>()),
+        BlocProvider(create: (_) => di.sl<GetSingleOtherUserCubit>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

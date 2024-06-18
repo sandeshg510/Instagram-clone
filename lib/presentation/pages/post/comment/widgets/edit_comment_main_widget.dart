@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/consts.dart';
@@ -30,8 +31,16 @@ class _EditCommentMainPageState extends State<EditCommentMainPage> {
     return Scaffold(
       backgroundColor: backGroundColor,
       appBar: AppBar(
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(
+              CupertinoIcons.back,
+              color: Colors.white,
+            )),
         title: const Text(
-          'Edit comment',
+          'Edit your comment',
           style: TextStyle(color: primaryColor),
         ),
         backgroundColor: backGroundColor,

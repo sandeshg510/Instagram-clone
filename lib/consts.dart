@@ -23,6 +23,11 @@ class PageConst {
   static const String loginPage = 'loginPage';
   static const String signUpPage = 'signUpPage';
   static const String updateCommentPage = 'updateCommentPage';
+  static const String updateReplyPage = 'updateReplyPage';
+  static const String postDetailPage = 'postDetailPage';
+  static const String singleUserProfilePage = 'singleUserProfilePage';
+  static const String followingPage = 'followingPage';
+  static const String followersPage = 'followersPage';
 }
 
 class FirebaseConst {

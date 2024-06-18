@@ -230,7 +230,19 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       final postDocRef = await postCollection.doc(post.postId).get();
 
       if (!postDocRef.exists) {
-        postCollection.doc(post.postId).set(newPost);
+        postCollection.doc(post.postId).set(newPost).then((value) {
+          final userCollection = firebaseFirestore
+              .collection(FirebaseConst.users)
+              .doc(post.creatorUid);
+          userCollection.get().then((value) {
+            if (value.exists) {
+              final totalPosts = value.get('totalPosts');
+
+              userCollection.update({'totalPosts': totalPosts + 1});
+              return;
+            }
+          });
+        });
       } else {
         postCollection.doc(post.postId).update(newPost);
       }
@@ -244,7 +256,20 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final postCollection = firebaseFirestore.collection(FirebaseConst.posts);
 
     try {
-      postCollection.doc(post.postId).delete();
+      postCollection.doc(post.postId).delete().then((value) {
+        final userCollection = firebaseFirestore
+            .collection(FirebaseConst.users)
+            .doc(post.creatorUid);
+        userCollection.get().then((value) {
+          if (value.exists) {
+            final totalPosts = value.get('totalPosts');
+
+            userCollection.update({'totalPosts': totalPosts - 1});
+            return;
+          }
+        });
+      });
+      ;
     } catch (e) {
       print('some error occurred $e');
     }
@@ -457,7 +482,21 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       final replyDocRef = await replyCollection.doc(reply.replyId).get();
 
       if (!replyDocRef.exists) {
-        replyCollection.doc(reply.replyId).set(newReply);
+        replyCollection.doc(reply.replyId).set(newReply).then((value) {
+          final commentCollection = firebaseFirestore
+              .collection(FirebaseConst.posts)
+              .doc(reply.postId)
+              .collection(FirebaseConst.comments)
+              .doc(reply.commentId);
+          commentCollection.get().then((value) {
+            if (value.exists) {
+              final totalReplies = value.get('totalReplies');
+
+              commentCollection.update({'totalReplies': totalReplies + 1});
+              return;
+            }
+          });
+        });
       } else {
         replyCollection.doc(reply.replyId).update(newReply);
       }
@@ -476,7 +515,22 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         .collection(FirebaseConst.reply);
 
     try {
-      replyCollection.doc(reply.replyId).delete();
+      replyCollection.doc(reply.replyId).delete().then((value) {
+        final commentCollection = firebaseFirestore
+            .collection(FirebaseConst.posts)
+            .doc(reply.postId)
+            .collection(FirebaseConst.comments)
+            .doc(reply.commentId);
+        commentCollection.get().then((value) {
+          if (value.exists) {
+            final totalReplies = value.get('totalReplies');
+
+            commentCollection.update({'totalReplies': totalReplies - 1});
+            return;
+          }
+        });
+      });
+      ;
     } catch (e) {
       print('Some error occurred $e');
     }
@@ -537,5 +591,96 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       replyInfo['description'] = reply.description;
     }
     replyCollection.doc(reply.replyId).update(replyInfo);
+  }
+
+  @override
+  Future<void> followUnfollowUser(UserEntity user) async {
+    final userCollection = firebaseFirestore.collection(FirebaseConst.users);
+
+    final currentUserDocRef = await userCollection.doc(user.uid).get();
+    final otherUserDocRef = await userCollection.doc(user.otherUid).get();
+
+    if (currentUserDocRef.exists && otherUserDocRef.exists) {
+      List currentUsersFollowingList = currentUserDocRef.get('following');
+      List otherUsersFollowersList = otherUserDocRef.get('followers');
+
+      // Current User Following List
+      if (currentUsersFollowingList.contains(user.otherUid)) {
+        userCollection.doc(user.uid).update({
+          'following': FieldValue.arrayRemove([user.otherUid])
+        }).then((value) {
+          final userCollection =
+              firebaseFirestore.collection(FirebaseConst.users).doc(user.uid);
+          userCollection.get().then((value) {
+            if (value.exists) {
+              final totalFollowing = value.get('totalFollowing');
+
+              userCollection.update({'totalFollowing': totalFollowing - 1});
+              return;
+            }
+          });
+        });
+      } else {
+        userCollection.doc(user.uid).update({
+          'following': FieldValue.arrayUnion([user.otherUid])
+        }).then((value) {
+          final userCollection =
+              firebaseFirestore.collection(FirebaseConst.users).doc(user.uid);
+          userCollection.get().then((value) {
+            if (value.exists) {
+              final totalFollowing = value.get('totalFollowing');
+
+              userCollection.update({'totalFollowing': totalFollowing + 1});
+              return;
+            }
+          });
+        });
+      }
+
+      // Other User Followers List
+      if (otherUsersFollowersList.contains(user.uid)) {
+        userCollection.doc(user.otherUid).update({
+          'followers': FieldValue.arrayRemove([user.uid])
+        }).then((value) {
+          final userCollection = firebaseFirestore
+              .collection(FirebaseConst.users)
+              .doc(user.otherUid);
+          userCollection.get().then((value) {
+            if (value.exists) {
+              final totalFollowers = value.get('totalFollowers');
+
+              userCollection.update({'totalFollowers': totalFollowers - 1});
+              return;
+            }
+          });
+        });
+      } else {
+        userCollection.doc(user.otherUid).update({
+          'followers': FieldValue.arrayUnion([user.uid])
+        }).then((value) {
+          final userCollection = firebaseFirestore
+              .collection(FirebaseConst.users)
+              .doc(user.otherUid);
+          userCollection.get().then((value) {
+            if (value.exists) {
+              final totalFollowers = value.get('totalFollowers');
+
+              userCollection.update({'totalFollowers': totalFollowers + 1});
+              return;
+            }
+          });
+        });
+      }
+    }
+  }
+
+  @override
+  Stream<List<UserEntity>> getSingleOtherUser(String otherUid) {
+    final userCollection = firebaseFirestore
+        .collection(FirebaseConst.users)
+        .where('uid', isEqualTo: otherUid)
+        .limit(1);
+    return userCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList());
   }
 }

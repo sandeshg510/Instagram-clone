@@ -60,7 +60,9 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onLongPress: widget.onLongPressListener,
+      onLongPress: widget.comment.creatorUid == _currentUid
+          ? widget.onLongPressListener
+          : null,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
         child: Row(
@@ -293,8 +295,8 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Navigator.pushNamed(context, PageConst.updateReplyPage,
-                    //     arguments: comment);
+                    Navigator.pushNamed(context, PageConst.updateReplyPage,
+                        arguments: reply);
                   },
                   child: const Padding(
                     padding: EdgeInsets.only(
