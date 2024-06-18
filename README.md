@@ -8,6 +8,7 @@ Here I've used the followings :
 - Cloud Firestore
 
 Here I've implemeted the following features :
-- Posts, comments, likes, following, followers, profile
+- Search, Posts, comments, likes, following, followers, profile
 - CRUD operations on Profile, posts, comments, replies
+- animations
 
