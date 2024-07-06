@@ -6,14 +6,16 @@ import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/data/data_sources/remote_data_sources/remote_data_sources.dart';
 import 'package:instagram_clone/data/models/comment/comment_model.dart';
 import 'package:instagram_clone/data/models/posts/post_model.dart';
+import 'package:instagram_clone/data/models/reels/reel_model.dart';
 import 'package:instagram_clone/data/models/user/user_model.dart';
 import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
 import 'package:instagram_clone/domain/entities/comment/reply/reply_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
+import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:video_compress/video_compress.dart';
 import '../../models/comment/reply/reply_model.dart';
 
 class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
@@ -209,6 +211,68 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     return await imageUrl;
   }
 
+  compressVideoFile(String videoFilePath) async {
+    final compressedVideoFile = await VideoCompress.compressVideo(videoFilePath,
+        quality: VideoQuality.LowQuality);
+
+    return compressedVideoFile!.file;
+  }
+
+  uploadCompressedVideoFileToDB(String videoFilePath) async {
+    UploadTask videoUploadTask = firebaseStorage
+        .ref()
+        .child('All Videos')
+        .child(firebaseAuth.currentUser!.uid)
+        .putFile(await compressVideoFile(videoFilePath));
+
+    TaskSnapshot snapshot = await videoUploadTask;
+
+    final downloadUrlOfUploadedVideo = await snapshot.ref.getDownloadURL();
+
+    return downloadUrlOfUploadedVideo;
+  }
+
+  getThumbnailImage(String videoFilePath) async {
+    final thumbnailImage = await VideoCompress.getFileThumbnail(videoFilePath);
+
+    return thumbnailImage;
+  }
+
+  // uploadThumbnailImageToDB(String videoId, String videoFilePath) async {
+  //   UploadTask thumbnailUploadTask = firebaseStorage
+  //       .ref()
+  //       .child('All Thumbnails')
+  //       .child(videoId)
+  //       .putFile(await getThumbnailImage(videoFilePath));
+  //
+  //   TaskSnapshot snapshot = await thumbnailUploadTask;
+  //
+  //   final downloadUrlOfUploadedThumbnail = await snapshot.ref.getDownloadURL();
+  //
+  //   return downloadUrlOfUploadedThumbnail;
+  // }
+
+  @override
+  uploadReelToStorage(
+      {required String descriptionText,
+      required String videoFilePath,
+      required context}) async {
+    DocumentSnapshot userDocumentSnapshot = await firebaseFirestore
+        .collection(FirebaseConst.users)
+        .doc(firebaseAuth.currentUser!.uid)
+        .get();
+
+    //Uploading video to storage
+    String videoDownloadUrl =
+        await uploadCompressedVideoFileToDB(videoFilePath);
+
+    //Uploading Thumbnail to storage
+    // String thumbnailDownloadUrl =
+    //     await uploadThumbnailImageToDB(videoId, videoFilePath);
+
+    return videoDownloadUrl;
+  }
+
   @override
   Future<void> createPost(PostEntity post) async {
     final postCollection = firebaseFirestore.collection(FirebaseConst.posts);
@@ -245,6 +309,49 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         });
       } else {
         postCollection.doc(post.postId).update(newPost);
+      }
+    } catch (e) {
+      print('some error occurred $e');
+    }
+  }
+
+  @override
+  Future<void> createReel(ReelEntity reel) async {
+    final reelCollection = firebaseFirestore.collection(FirebaseConst.reels);
+
+    final newReel = ReelModel(
+      reelId: reel.reelId,
+      creatorUid: reel.creatorUid,
+      username: reel.username,
+      description: reel.description,
+      reelUrl: reel.reelUrl,
+      thumbnailUrl: reel.thumbnailUrl,
+      likes: [],
+      totalLikes: 0,
+      totalComments: 0,
+      createAt: reel.createAt,
+      userProfileUrl: reel.userProfileUrl,
+    ).toJson();
+
+    try {
+      final reelDocRef = await reelCollection.doc(reel.reelId).get();
+
+      if (!reelDocRef.exists) {
+        reelCollection.doc(reel.reelId).set(newReel).then((value) {
+          final userCollection = firebaseFirestore
+              .collection(FirebaseConst.users)
+              .doc(reel.creatorUid);
+          userCollection.get().then((value) {
+            if (value.exists) {
+              final totalPosts = value.get('totalPosts');
+
+              userCollection.update({'totalPosts': totalPosts + 1});
+              return;
+            }
+          });
+        });
+      } else {
+        reelCollection.doc(reel.reelId).update(newReel);
       }
     } catch (e) {
       print('some error occurred $e');
@@ -682,5 +789,20 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         .limit(1);
     return userCollection.snapshots().map((querySnapshot) =>
         querySnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList());
+  }
+
+  @override
+  Future<String> uploadReelThumbnailToStorage(String videoFilePath) async {
+    UploadTask thumbnailUploadTask = firebaseStorage
+        .ref()
+        .child('All Thumbnails')
+        .child(firebaseAuth.currentUser!.uid)
+        .putFile(await getThumbnailImage(videoFilePath));
+
+    TaskSnapshot snapshot = await thumbnailUploadTask;
+
+    final downloadUrlOfUploadedThumbnail = await snapshot.ref.getDownloadURL();
+
+    return downloadUrlOfUploadedThumbnail;
   }
 }

@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -54,85 +52,169 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _image == null
-        ? _uploadPostsWidget()
-        : Scaffold(
-            backgroundColor: backGroundColor,
-            appBar: AppBar(
-              backgroundColor: backGroundColor,
-              leading: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _image = null;
-                    });
-                  },
-                  child: const Icon(
-                    Icons.close,
-                    size: 28,
-                    color: primaryColor,
-                  )),
-              actions: [
-                GestureDetector(
-                  onTap: _submitPost,
-                  child: const Padding(
-                    padding: EdgeInsets.all(18.0),
-                    child: Icon(
-                      Icons.arrow_forward,
-                      color: primaryColor,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 80,
-                    height: 80,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(40),
-                        child: profileWidget(
-                            imageUrl: '${widget.currentUser.profileUrl}')),
-                  ),
-                  sizedBoxVer(10),
-                  Text(
-                    '${widget.currentUser.username}',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  sizedBoxVer(10),
-                  Container(
-                    height: 200,
-                    width: double.infinity,
-                    child: profileWidget(image: _image),
-                  ),
-                  sizedBoxVer(10),
-                  ProfileFormWidget(
-                      title: 'Description', controller: _descriptionController),
-                  sizedBoxVer(20),
-                  _isUploading == true
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text(
-                              'Uploading...',
-                              style: TextStyle(color: primaryColor),
-                            ),
-                            sizedBoxHor(10),
-                            const CircularProgressIndicator()
-                          ],
-                        )
-                      : const SizedBox(
-                          height: 10,
-                          width: 10,
-                        )
-                ],
+    return child();
+  }
+
+  Widget child() {
+    if (_image == null) {
+      return _uploadPostsWidget();
+    }
+    if (_image != null) {
+      Scaffold(
+        backgroundColor: backGroundColor,
+        appBar: AppBar(
+          backgroundColor: backGroundColor,
+          leading: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _image = null;
+                });
+              },
+              child: const Icon(
+                Icons.close,
+                size: 28,
+                color: primaryColor,
+              )),
+          actions: [
+            GestureDetector(
+              onTap: _submitPost,
+              child: const Padding(
+                padding: EdgeInsets.all(18.0),
+                child: Icon(
+                  Icons.arrow_forward,
+                  color: primaryColor,
+                ),
+              ),
+            )
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 80,
+                height: 80,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: profileWidget(
+                        imageUrl: '${widget.currentUser.profileUrl}')),
+              ),
+              sizedBoxVer(10),
+              Text(
+                '${widget.currentUser.username}',
+                style: const TextStyle(color: Colors.white),
+              ),
+              sizedBoxVer(10),
+              SizedBox(
+                height: 200,
+                width: double.infinity,
+                child: profileWidget(image: _image),
+              ),
+              sizedBoxVer(10),
+              ProfileFormWidget(
+                  title: 'Description', controller: _descriptionController),
+              sizedBoxVer(20),
+              _isUploading == true
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Uploading...',
+                          style: TextStyle(color: primaryColor),
+                        ),
+                        sizedBoxHor(10),
+                        const CircularProgressIndicator()
+                      ],
+                    )
+                  : const SizedBox(
+                      height: 10,
+                      width: 10,
+                    )
+            ],
+          ),
+        ),
+      );
+    }
+    return Scaffold(
+      backgroundColor: backGroundColor,
+      appBar: AppBar(
+        backgroundColor: backGroundColor,
+        leading: GestureDetector(
+            onTap: () {
+              setState(() {
+                _image = null;
+              });
+            },
+            child: const Icon(
+              Icons.close,
+              size: 28,
+              color: primaryColor,
+            )),
+        actions: [
+          GestureDetector(
+            onTap: _submitPost,
+            child: const Padding(
+              padding: EdgeInsets.all(18.0),
+              child: Icon(
+                Icons.arrow_forward,
+                color: primaryColor,
               ),
             ),
-          );
+          )
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 80,
+              height: 80,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(40),
+                  child: profileWidget(
+                      imageUrl: '${widget.currentUser.profileUrl}')),
+            ),
+            sizedBoxVer(10),
+            Text(
+              '${widget.currentUser.username}',
+              style: const TextStyle(color: Colors.white),
+            ),
+            sizedBoxVer(10),
+            SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: profileWidget(image: _image),
+            ),
+            sizedBoxVer(10),
+            ProfileFormWidget(
+                title: 'Description', controller: _descriptionController),
+            sizedBoxVer(20),
+            _isUploading == true
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Uploading...',
+                        style: TextStyle(color: primaryColor),
+                      ),
+                      sizedBoxHor(10),
+                      const CircularProgressIndicator()
+                    ],
+                  )
+                : const SizedBox(
+                    height: 10,
+                    width: 10,
+                  )
+          ],
+        ),
+      ),
+    );
   }
 
   _submitPost() {
@@ -180,19 +262,29 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
     return Scaffold(
       backgroundColor: backGroundColor,
       body: Center(
-        child: GestureDetector(
-          onTap: selectImage,
-          child: Container(
-            height: 150,
-            width: 150,
-            decoration: BoxDecoration(
-                color: secondaryColor.withOpacity(0.3), shape: BoxShape.circle),
-            child: const Icon(
-              Icons.upload,
-              size: 40,
-              color: primaryColor,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: selectImage,
+              child: Container(
+                height: 150,
+                width: 150,
+                decoration: BoxDecoration(
+                    color: secondaryColor.withOpacity(0.3),
+                    shape: BoxShape.circle),
+                child: const Icon(
+                  Icons.upload,
+                  size: 40,
+                  color: primaryColor,
+                ),
+              ),
             ),
-          ),
+            const Text(
+              'Upload a post',
+              style: TextStyle(color: primaryColor),
+            ),
+          ],
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:instagram_clone/data/data_sources/remote_data_sources/remote_dat
 import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
 import 'package:instagram_clone/domain/entities/comment/reply/reply_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
+import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import 'package:instagram_clone/domain/repository/firebase_repository.dart';
 
@@ -126,4 +127,23 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   @override
   Stream<List<UserEntity>> getSingleOtherUser(String otherUid) =>
       remoteDataSource.getSingleOtherUser(otherUid);
+
+  @override
+  uploadReelToStorage(
+          {required String descriptionText,
+          required String videoFilePath,
+          required context}) async =>
+      remoteDataSource.uploadReelToStorage(
+        descriptionText: descriptionText,
+        videoFilePath: videoFilePath,
+        context: context,
+      );
+
+  @override
+  Future<void> createReel(ReelEntity reel) async =>
+      remoteDataSource.createReel(reel);
+
+  @override
+  Future<String> uploadReelThumbnailToStorage(String videoFilePath) async =>
+      remoteDataSource.uploadReelThumbnailToStorage(videoFilePath);
 }

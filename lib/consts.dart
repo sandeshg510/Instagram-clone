@@ -28,11 +28,14 @@ class PageConst {
   static const String singleUserProfilePage = 'singleUserProfilePage';
   static const String followingPage = 'followingPage';
   static const String followersPage = 'followersPage';
+  static const String uploadReelsPage = 'uploadReelsPage';
+  static const String uploadPostPage = 'uploadPostPage';
 }
 
 class FirebaseConst {
   static const String users = 'users';
   static const String posts = 'posts';
+  static const String reels = 'reels';
   static const String comments = 'comments';
   static const String replies = 'replies';
   static const String reply = 'reply';

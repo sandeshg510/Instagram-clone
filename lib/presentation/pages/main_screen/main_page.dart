@@ -6,6 +6,7 @@ import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:instagram_clone/presentation/pages/activity/activity_page.dart';
 import 'package:instagram_clone/presentation/pages/home/home_page.dart';
+import 'package:instagram_clone/presentation/pages/post/upload_page.dart';
 import 'package:instagram_clone/presentation/pages/post/upload_post_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/profile_page.dart';
 import 'package:instagram_clone/presentation/pages/search/search_page.dart';
@@ -80,7 +81,7 @@ class _MainPageState extends State<MainPage> {
               children: [
                 const HomePage(),
                 const SearchPage(),
-                UploadPostPage(currentUser: currentUser),
+                UploadPage(currentUser: currentUser),
                 const ActivityPage(),
                 ProfilePage(currentUser: currentUser)
               ],

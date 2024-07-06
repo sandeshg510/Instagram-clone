@@ -5,6 +5,7 @@ import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import '../../../domain/entities/comment/comment_entity.dart';
 import '../../../domain/entities/comment/reply/reply_entity.dart';
 import '../../../domain/entities/posts/post_entity.dart';
+import '../../../domain/entities/reels/reels_entity.dart';
 
 abstract class FirebaseRemoteDataSource {
   //Credential
@@ -24,8 +25,20 @@ abstract class FirebaseRemoteDataSource {
   Future<void> followUnfollowUser(UserEntity user);
 
   //Cloud Storage
+  //Images
   Future<String> uploadImageToStorage(
       File? file, bool isPost, String childName);
+
+  //Reels
+  uploadReelToStorage(
+      {required String descriptionText,
+      required String videoFilePath,
+      required context});
+
+  Future<String> uploadReelThumbnailToStorage(String videoFilePath);
+
+  //Reels Features
+  Future<void> createReel(ReelEntity reel);
 
   //Posts Features
   Future<void> createPost(PostEntity post);
@@ -34,6 +47,8 @@ abstract class FirebaseRemoteDataSource {
   Future<void> updatePost(PostEntity post);
   Future<void> deletePost(PostEntity post);
   Future<void> likePost(PostEntity post);
+
+  //Video Features
 
   //Comments Features
   Future<void> createComment(CommentEntity comment);
