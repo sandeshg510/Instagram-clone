@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
+import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
+import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
-import 'package:instagram_clone/presentation/pages/activity/activity_page.dart';
 import 'package:instagram_clone/presentation/pages/home/home_page.dart';
 import 'package:instagram_clone/presentation/pages/post/upload_page.dart';
-import 'package:instagram_clone/presentation/pages/post/upload_post_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/profile_page.dart';
 import 'package:instagram_clone/presentation/pages/search/search_page.dart';
+
+import '../reels/reels_page.dart';
 
 class MainPage extends StatefulWidget {
   final String uid;
@@ -29,6 +31,7 @@ class _MainPageState extends State<MainPage> {
     pageController = PageController();
     super.initState();
     BlocProvider.of<GetSingleUserCubit>(context).getSingleUser(uid: widget.uid);
+    BlocProvider.of<ReelCubit>(context).getReels(reel: ReelEntity());
   }
 
   @override
@@ -68,8 +71,12 @@ class _MainPageState extends State<MainPage> {
                 const BottomNavigationBarItem(icon: Icon(Icons.search_sharp)),
                 const BottomNavigationBarItem(
                     icon: Icon(Icons.add_circle_outline_sharp)),
-                const BottomNavigationBarItem(
-                    icon: Icon(Icons.favorite_outline_sharp)),
+                BottomNavigationBarItem(
+                    icon: Image.asset(
+                  'assets/reels_logo.png',
+                  color: primaryColor,
+                  height: 20,
+                )),
                 const BottomNavigationBarItem(
                     icon: Icon(Icons.account_circle_sharp)),
               ],
@@ -82,7 +89,7 @@ class _MainPageState extends State<MainPage> {
                 const HomePage(),
                 const SearchPage(),
                 UploadPage(currentUser: currentUser),
-                const ActivityPage(),
+                const ReelsPage(),
                 ProfilePage(currentUser: currentUser)
               ],
             ),

@@ -222,7 +222,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     UploadTask videoUploadTask = firebaseStorage
         .ref()
         .child('All Videos')
-        .child(firebaseAuth.currentUser!.uid)
+        .child(const Uuid().v1())
         .putFile(await compressVideoFile(videoFilePath));
 
     TaskSnapshot snapshot = await videoUploadTask;
@@ -234,23 +234,8 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
   getThumbnailImage(String videoFilePath) async {
     final thumbnailImage = await VideoCompress.getFileThumbnail(videoFilePath);
-
     return thumbnailImage;
   }
-
-  // uploadThumbnailImageToDB(String videoId, String videoFilePath) async {
-  //   UploadTask thumbnailUploadTask = firebaseStorage
-  //       .ref()
-  //       .child('All Thumbnails')
-  //       .child(videoId)
-  //       .putFile(await getThumbnailImage(videoFilePath));
-  //
-  //   TaskSnapshot snapshot = await thumbnailUploadTask;
-  //
-  //   final downloadUrlOfUploadedThumbnail = await snapshot.ref.getDownloadURL();
-  //
-  //   return downloadUrlOfUploadedThumbnail;
-  // }
 
   @override
   uploadReelToStorage(
@@ -259,7 +244,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       required context}) async {
     DocumentSnapshot userDocumentSnapshot = await firebaseFirestore
         .collection(FirebaseConst.users)
-        .doc(firebaseAuth.currentUser!.uid)
+        .doc(const Uuid().v1())
         .get();
 
     //Uploading video to storage
@@ -414,6 +399,16 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
     return postCollection.snapshots().map((querySnapshot) =>
         querySnapshot.docs.map((e) => PostModel.fromSnapshot(e)).toList());
+  }
+
+  @override
+  Stream<List<ReelEntity>> getReels(ReelEntity reel) {
+    final reelCollection = firebaseFirestore
+        .collection(FirebaseConst.reels)
+        .orderBy('createAt', descending: true);
+
+    return reelCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => ReelModel.fromSnapshot(e)).toList());
   }
 
   @override
@@ -796,7 +791,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     UploadTask thumbnailUploadTask = firebaseStorage
         .ref()
         .child('All Thumbnails')
-        .child(firebaseAuth.currentUser!.uid)
+        .child(const Uuid().v1())
         .putFile(await getThumbnailImage(videoFilePath));
 
     TaskSnapshot snapshot = await thumbnailUploadTask;
@@ -805,4 +800,17 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
     return downloadUrlOfUploadedThumbnail;
   }
+// uploadThumbnailImageToDB(String videoId, String videoFilePath) async {
+//   UploadTask thumbnailUploadTask = firebaseStorage
+//       .ref()
+//       .child('All Thumbnails')
+//       .child(videoId)
+//       .putFile(await getThumbnailImage(videoFilePath));
+//
+//   TaskSnapshot snapshot = await thumbnailUploadTask;
+//
+//   final downloadUrlOfUploadedThumbnail = await snapshot.ref.getDownloadURL();
+//
+//   return downloadUrlOfUploadedThumbnail;
+// }
 }

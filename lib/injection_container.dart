@@ -20,6 +20,7 @@ import 'package:instagram_clone/domain/usecases/firebase_usecases/posts/like_pos
 import 'package:instagram_clone/domain/usecases/firebase_usecases/posts/read_post_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/posts/read_single_post_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/create_reel_usecase.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/get_reels_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_image_to_storage_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_reel_to_storage_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_thumbnail_to_storage_usecase.dart';
@@ -92,6 +93,7 @@ Future<void> init() async {
   sl.registerFactory(() => ReelCubit(
         createReelUseCase: sl.call(),
         uploadThumbnailToStorageUseCase: sl.call(),
+        getReelsUseCase: sl.call(),
       ));
 
   //PostCubit
@@ -154,6 +156,7 @@ Future<void> init() async {
 
   //Reel
   sl.registerLazySingleton(() => CreateReelUseCase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetReelsUseCase(repository: sl.call()));
 
   //Comment
   sl.registerLazySingleton(() => CreateCommentUseCase(repository: sl.call()));

@@ -50,6 +50,8 @@ abstract class FirebaseRepository {
   //Reels Features
   Future<void> createReel(ReelEntity reel);
 
+  Stream<List<ReelEntity>> getReels(ReelEntity reel);
+
   //Posts Features
   Future<void> createPost(PostEntity post);
 
