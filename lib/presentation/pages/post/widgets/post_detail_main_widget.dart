@@ -78,7 +78,7 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                     children: [
                       Row(
                         children: [
-                          Container(
+                          SizedBox(
                             height: 30,
                             width: 30,
                             child: ClipRRect(

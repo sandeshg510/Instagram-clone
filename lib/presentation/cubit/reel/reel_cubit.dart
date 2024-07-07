@@ -5,19 +5,22 @@ import 'package:equatable/equatable.dart';
 import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/create_reel_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/get_reels_usecase.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/like_reel_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_thumbnail_to_storage_usecase.dart';
 
 part 'reel_state.dart';
 
 class ReelCubit extends Cubit<ReelState> {
-  ReelCubit(
-      {required this.uploadThumbnailToStorageUseCase,
-      required this.createReelUseCase,
-      required this.getReelsUseCase})
-      : super(ReelInitial());
+  ReelCubit({
+    required this.uploadThumbnailToStorageUseCase,
+    required this.createReelUseCase,
+    required this.getReelsUseCase,
+    required this.likeReelUseCase,
+  }) : super(ReelInitial());
 
   final CreateReelUseCase createReelUseCase;
   final GetReelsUseCase getReelsUseCase;
+  final LikeReelUseCase likeReelUseCase;
   final UploadThumbnailToStorageUseCase uploadThumbnailToStorageUseCase;
 
   Future<void> createReels({required ReelEntity reel}) async {
@@ -56,6 +59,17 @@ class ReelCubit extends Cubit<ReelState> {
     } on SocketException catch (_) {
       emit(ReelFailure());
     } catch (_) {
+      emit(ReelFailure());
+    }
+  }
+
+  Future<void> likeReels({required ReelEntity reel}) async {
+    emit(ReelLoading());
+    try {
+      await likeReelUseCase.call(reel);
+    } on SocketException catch (_) {
+      emit(ReelFailure());
+    } catch (e) {
       emit(ReelFailure());
     }
   }

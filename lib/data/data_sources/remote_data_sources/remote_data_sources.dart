@@ -42,6 +42,12 @@ abstract class FirebaseRemoteDataSource {
 
   Stream<List<ReelEntity>> getReels(ReelEntity reel);
 
+  Stream<List<ReelEntity>> getSingleReel(String reelId);
+
+  Future<void> deleteReel(ReelEntity reel);
+
+  Future<void> likeReel(ReelEntity reel);
+
   //Posts Features
   Future<void> createPost(PostEntity post);
   Stream<List<PostEntity>> readPosts(PostEntity post);

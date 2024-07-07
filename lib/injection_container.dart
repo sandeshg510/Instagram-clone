@@ -21,6 +21,8 @@ import 'package:instagram_clone/domain/usecases/firebase_usecases/posts/read_pos
 import 'package:instagram_clone/domain/usecases/firebase_usecases/posts/read_single_post_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/create_reel_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/get_reels_usecase.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/get_single_reel_usecase.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/like_reel_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_image_to_storage_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_reel_to_storage_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_thumbnail_to_storage_usecase.dart';
@@ -41,6 +43,7 @@ import 'package:instagram_clone/presentation/cubit/comment/reply/reply_cubit.dar
 import 'package:instagram_clone/presentation/cubit/credential/credential_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/post/get_single_post/get_single_post_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
+import 'package:instagram_clone/presentation/cubit/reel/get_single_reel/get_single_reel_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_other_user/get_single_other_user_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
@@ -94,12 +97,16 @@ Future<void> init() async {
         createReelUseCase: sl.call(),
         uploadThumbnailToStorageUseCase: sl.call(),
         getReelsUseCase: sl.call(),
+        likeReelUseCase: sl.call(),
       ));
 
   //PostCubit
   sl.registerFactory(() => GetSinglePostCubit(
         readSinglePostUseCase: sl.call(),
       ));
+
+  //ReelCubit
+  sl.registerFactory(() => GetSingleReelCubit(getSingleReelUseCase: sl.call()));
 
   //CommentCubit
   sl.registerFactory(() => CommentCubit(
@@ -157,6 +164,8 @@ Future<void> init() async {
   //Reel
   sl.registerLazySingleton(() => CreateReelUseCase(repository: sl.call()));
   sl.registerLazySingleton(() => GetReelsUseCase(repository: sl.call()));
+  sl.registerLazySingleton(() => LikeReelUseCase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetSingleReelUseCase(repository: sl.call()));
 
   //Comment
   sl.registerLazySingleton(() => CreateCommentUseCase(repository: sl.call()));

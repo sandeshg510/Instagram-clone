@@ -368,6 +368,12 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
+  Future<void> deleteReel(ReelEntity reel) {
+    // TODO: implement deleteReel
+    throw UnimplementedError();
+  }
+
+  @override
   Future<void> likePost(PostEntity post) async {
     final postCollection = firebaseFirestore.collection(FirebaseConst.posts);
     final currentUid = await getCurrentUid();
@@ -392,10 +398,47 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
+  Future<void> likeReel(ReelEntity reel) async {
+    final reelCollection = firebaseFirestore.collection(FirebaseConst.reels);
+    final currentUid = await getCurrentUid();
+    final reelRef = await reelCollection.doc(reel.reelId).get();
+
+    if (reelRef.exists) {
+      List likes = reelRef.get('likes');
+
+      final totalLikes = reelRef.get('totalLikes');
+
+      if (likes.contains(currentUid)) {
+        reelCollection.doc(reel.reelId).update({
+          'likes': FieldValue.arrayRemove([currentUid]),
+          'totalLikes': totalLikes - 1,
+        });
+      } else {
+        print('liked');
+        reelCollection.doc(reel.reelId).update({
+          'likes': FieldValue.arrayUnion([currentUid]),
+          'totalLikes': totalLikes + 1,
+        });
+      }
+    }
+  }
+
+  @override
   Stream<List<PostEntity>> readPosts(PostEntity post) {
     final postCollection = firebaseFirestore
         .collection(FirebaseConst.posts)
         .orderBy('createAt', descending: true);
+
+    return postCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => PostModel.fromSnapshot(e)).toList());
+  }
+
+  @override
+  Stream<List<PostEntity>> readSinglePost(String postId) {
+    final postCollection = firebaseFirestore
+        .collection(FirebaseConst.posts)
+        .orderBy('createAt', descending: true)
+        .where('postId', isEqualTo: postId);
 
     return postCollection.snapshots().map((querySnapshot) =>
         querySnapshot.docs.map((e) => PostModel.fromSnapshot(e)).toList());
@@ -412,14 +455,14 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
-  Stream<List<PostEntity>> readSinglePost(String postId) {
-    final postCollection = firebaseFirestore
-        .collection(FirebaseConst.posts)
+  Stream<List<ReelEntity>> getSingleReel(String reelId) {
+    final reelCollection = firebaseFirestore
+        .collection(FirebaseConst.reels)
         .orderBy('createAt', descending: true)
-        .where('postId', isEqualTo: postId);
+        .where('reelId', isEqualTo: reelId);
 
-    return postCollection.snapshots().map((querySnapshot) =>
-        querySnapshot.docs.map((e) => PostModel.fromSnapshot(e)).toList());
+    return reelCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => ReelModel.fromSnapshot(e)).toList());
   }
 
   @override
@@ -800,6 +843,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
     return downloadUrlOfUploadedThumbnail;
   }
+
 // uploadThumbnailImageToDB(String videoId, String videoFilePath) async {
 //   UploadTask thumbnailUploadTask = firebaseStorage
 //       .ref()

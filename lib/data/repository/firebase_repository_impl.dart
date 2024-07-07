@@ -148,6 +148,18 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
       remoteDataSource.getReels(reel);
 
   @override
+  Stream<List<ReelEntity>> getSingleReel(String reelId) =>
+      remoteDataSource.getSingleReel(reelId);
+
+  @override
   Future<String> uploadReelThumbnailToStorage(String videoFilePath) async =>
       remoteDataSource.uploadReelThumbnailToStorage(videoFilePath);
+
+  @override
+  Future<void> deleteReel(ReelEntity reel) async =>
+      remoteDataSource.deleteReel(reel);
+
+  @override
+  Future<void> likeReel(ReelEntity reel) async =>
+      remoteDataSource.likeReel(reel);
 }
