@@ -5,7 +5,6 @@ import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
 import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
 import 'package:instagram_clone/presentation/pages/reels/widgets/single_reel_card_widget.dart';
-import 'package:video_player/video_player.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
 
 class ReelsPage extends StatefulWidget {
@@ -21,8 +20,6 @@ class _ReelsPageState extends State<ReelsPage> {
   @override
   Widget build(BuildContext context) {
     PageController pageController = PageController();
-    Size size = MediaQuery.of(context).size;
-    int index = 0;
 
     return Scaffold(
       backgroundColor: backGroundColor,
@@ -37,32 +34,17 @@ class _ReelsPageState extends State<ReelsPage> {
                 msg: 'some failure occurred while getting the reel');
           }
           if (reelState is ReelLoaded) {
-            print('reel loaded');
-            return
-                // PageView(
-                //   controller: pageController,
-                //   scrollDirection: Axis.vertical,
-                //   onPageChanged: (index) {
-                //     setState(() {
-                //       reel = reelState.reels[index++];
-                //     });
-                //   },
-                //   children: [
-                //     BlocProvider(
-                //         create: (context) => di.sl<ReelCubit>(),
-                //         child: SingleReelCardWidget(reel: reel)),
-                //   ]
+            return PageView.builder(
+                scrollDirection: Axis.vertical,
+                controller: pageController,
+                itemCount: reelState.reels.length,
+                itemBuilder: (context, index) {
+                  final reel = reelState.reels[index];
 
-                ListView.builder(
-              // physics: const NeverScrollableScrollPhysics(),
-              itemCount: reelState.reels.length,
-              itemBuilder: (context, index) {
-                final reel = reelState.reels[index];
-                return BlocProvider(
-                    create: (context) => di.sl<ReelCubit>(),
-                    child: SingleReelCardWidget(reel: reel));
-              },
-            );
+                  return BlocProvider(
+                      create: (context) => di.sl<ReelCubit>(),
+                      child: SingleReelCardWidget(reel: reel));
+                });
           }
           return const Center(
             child: Text('No reel'),
