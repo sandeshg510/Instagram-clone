@@ -1,9 +1,7 @@
 import 'dart:io';
-
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
-
 import '../../../domain/usecases/firebase_usecases/comment/create_comment_usecase.dart';
 import '../../../domain/usecases/firebase_usecases/comment/delete_comment_usecase.dart';
 import '../../../domain/usecases/firebase_usecases/comment/like_comment_usecase.dart';

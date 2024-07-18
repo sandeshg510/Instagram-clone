@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
+import 'package:instagram_clone/presentation/cubit/reel/get_single_reel/get_single_reel_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
 import 'package:instagram_clone/presentation/pages/reels/widgets/single_reel_card_widget.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
@@ -41,9 +42,16 @@ class _ReelsPageState extends State<ReelsPage> {
                 itemBuilder: (context, index) {
                   final reel = reelState.reels[index];
 
-                  return BlocProvider(
-                      create: (context) => di.sl<ReelCubit>(),
-                      child: SingleReelCardWidget(reel: reel));
+                  return MultiBlocProvider(
+                      providers: [
+                        BlocProvider(create: (context) => di.sl<ReelCubit>()),
+                        BlocProvider(
+                            create: (context) => di.sl<GetSingleReelCubit>()),
+                      ],
+                      child: SingleReelCardWidget(
+                        reel: reel,
+                        reelId: reel.reelId!,
+                      ));
                 });
           }
           return const Center(

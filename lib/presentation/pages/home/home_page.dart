@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
+import 'package:instagram_clone/presentation/pages/chats/messenger_page.dart';
 import 'package:instagram_clone/presentation/pages/home/widgets/single_post_card_widget.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
 
@@ -28,7 +29,12 @@ class HomePage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MessengerPage()));
+              },
               icon: Image.asset(
                 'assets/messenger.png',
                 color: primaryColor,
@@ -50,7 +56,6 @@ class HomePage extends StatelessWidget {
                   msg: 'some failure occurred while creating the post');
             }
             if (postState is PostLoaded) {
-              print('post loaded');
               return postState.posts.isEmpty
                   ? _noPostsYetWidget()
                   : ListView.builder(

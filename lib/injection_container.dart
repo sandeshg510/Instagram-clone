@@ -6,6 +6,8 @@ import 'package:instagram_clone/data/data_sources/remote_data_sources/remote_dat
 import 'package:instagram_clone/data/data_sources/remote_data_sources/remote_data_sources_impl.dart';
 import 'package:instagram_clone/data/repository/firebase_repository_impl.dart';
 import 'package:instagram_clone/domain/repository/firebase_repository.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/chats/get_messages_usecase.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/chats/send_message_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/comment/create_comment_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/comment/delete_comment_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/comment/read_comments_usecase.dart';
@@ -38,6 +40,7 @@ import 'package:instagram_clone/domain/usecases/firebase_usecases/user/sign_out_
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/sign_up_user_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/update_user_usecase.dart';
 import 'package:instagram_clone/presentation/cubit/auth/auth_cubit.dart';
+import 'package:instagram_clone/presentation/cubit/chats/chats_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/comment/comment_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/comment/reply/reply_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/credential/credential_cubit.dart';
@@ -48,7 +51,6 @@ import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_other_user/get_single_other_user_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/user_cubit.dart';
-
 import 'domain/usecases/firebase_usecases/comment/like_comment_usecase.dart';
 import 'domain/usecases/firebase_usecases/comment/reply/create_reply_usecase.dart';
 import 'domain/usecases/firebase_usecases/posts/update_post_usecase.dart';
@@ -117,6 +119,12 @@ Future<void> init() async {
         updateCommentUseCase: sl.call(),
       ));
 
+  //ChatCubit
+  sl.registerFactory(() => ChatsCubit(
+        sendMessageUseCase: sl.call(),
+        getMessagesUseCase: sl.call(),
+      ));
+
   //ReplyCubit
   sl.registerFactory(() => ReplyCubit(
         createReplyUseCase: sl.call(),
@@ -173,6 +181,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateCommentUseCase(repository: sl.call()));
   sl.registerLazySingleton(() => DeleteCommentUseCase(repository: sl.call()));
   sl.registerLazySingleton(() => LikeCommentUseCase(repository: sl.call()));
+
+  //Chats
+  sl.registerLazySingleton(() => SendMessageUseCase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetMessagesUseCase(repository: sl.call()));
 
   //Reply
   sl.registerLazySingleton(() => CreateReplyUseCase(repository: sl.call()));

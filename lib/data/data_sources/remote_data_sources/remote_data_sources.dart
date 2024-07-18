@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 
+import '../../../domain/entities/chats/message_entity.dart';
 import '../../../domain/entities/comment/comment_entity.dart';
 import '../../../domain/entities/comment/reply/reply_entity.dart';
 import '../../../domain/entities/posts/post_entity.dart';
@@ -27,7 +28,7 @@ abstract class FirebaseRemoteDataSource {
   //Cloud Storage
   //Images
   Future<String> uploadImageToStorage(
-      File? file, bool isPost, String childName);
+      File? file, bool isPost, bool isMessage, String childName);
 
   //Reels
   uploadReelToStorage(
@@ -71,4 +72,8 @@ abstract class FirebaseRemoteDataSource {
   Future<void> updateReply(ReplyEntity reply);
   Future<void> deleteReply(ReplyEntity reply);
   Future<void> likeReply(ReplyEntity reply);
+
+  //Chat features
+  Future<void> sendMessage(MessageEntity message, String groupId);
+  Stream<List<MessageEntity>> getMessages(String groupId);
 }

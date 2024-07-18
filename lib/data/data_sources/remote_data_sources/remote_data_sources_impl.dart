@@ -4,10 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/data/data_sources/remote_data_sources/remote_data_sources.dart';
+import 'package:instagram_clone/data/models/chats/message_model.dart';
 import 'package:instagram_clone/data/models/comment/comment_model.dart';
 import 'package:instagram_clone/data/models/posts/post_model.dart';
 import 'package:instagram_clone/data/models/reels/reel_model.dart';
 import 'package:instagram_clone/data/models/user/user_model.dart';
+import 'package:instagram_clone/domain/entities/chats/message_entity.dart';
 import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
 import 'package:instagram_clone/domain/entities/comment/reply/reply_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
@@ -125,9 +127,11 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         print('fields cannot be empty');
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
+      if (e.message ==
+          'The supplied auth credential is incorrect, malformed or has expired.') {
         Fluttertoast.showToast(msg: 'user not found');
-      } else if (e.code == 'wrong-password') {
+      } else if (e.message ==
+          'The supplied auth credential is incorrect, malformed or has expired.') {
         Fluttertoast.showToast(msg: 'Invalid email or password');
       }
     }
@@ -147,7 +151,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
           .then((value) async {
         if (value.user?.uid != null) {
           if (user.imageFile != null) {
-            uploadImageToStorage(user.imageFile, false, 'profileImages')
+            uploadImageToStorage(user.imageFile, false, false, 'profileImages')
                 .then((profileUrl) => createUserWithImage(user, profileUrl));
           } else {
             createUserWithImage(user, '');
@@ -192,14 +196,18 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
   @override
   Future<String> uploadImageToStorage(
-      File? file, bool isPost, String childName) async {
+      File? file, bool isPost, bool isMessage, String childName) async {
     Reference ref = firebaseStorage
         .ref()
         .child(childName)
         .child(firebaseAuth.currentUser!.uid);
 
     if (isPost) {
-      String id = Uuid().v1();
+      String id = const Uuid().v1();
+      ref = ref.child(id);
+    }
+    if (isMessage) {
+      String id = const Uuid().v1();
       ref = ref.child(id);
     }
 
@@ -480,6 +488,39 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
+  Future<void> sendMessage(MessageEntity message, String groupId) async {
+    final messageCollection = firebaseFirestore
+        .collection('chats')
+        .doc(groupId)
+        .collection('chatroom');
+
+    final newMessage = MessageModel(
+      message: message.message,
+      imageUrl: message.imageUrl,
+      messageType: message.messageType,
+      chatId: message.chatId,
+      createAt: message.createAt,
+      isLike: message.isLike,
+      creatorUid: message.creatorUid,
+    ).toJson();
+    try {
+      await firebaseFirestore
+          .collection(FirebaseConst.chats)
+          .doc(groupId)
+          .collection(FirebaseConst.chatroom)
+          .add(newMessage);
+
+      await firebaseFirestore.collection(FirebaseConst.chats).doc(groupId).set({
+        'lastMessage': newMessage['message'],
+        'groupId': groupId,
+        'group': groupId.split('-')
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print('some error occurred $e');
+    }
+  }
+
+  @override
   Future<void> createComment(CommentEntity comment) async {
     final commentCollection = firebaseFirestore
         .collection(FirebaseConst.posts)
@@ -585,6 +626,18 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
     return commentCollection.snapshots().map((querySnapshot) =>
         querySnapshot.docs.map((e) => CommentModel.fromSnapshot(e)).toList());
+  }
+
+  @override
+  Stream<List<MessageEntity>> getMessages(String groupId) {
+    final messageCollection = firebaseFirestore
+        .collection(FirebaseConst.chats)
+        .doc(groupId)
+        .collection(FirebaseConst.chatroom)
+        .orderBy('createAt', descending: true);
+
+    return messageCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => MessageModel.fromSnapshot(e)).toList());
   }
 
   @override

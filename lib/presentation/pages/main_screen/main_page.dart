@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
 import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
@@ -55,7 +54,6 @@ class _MainPageState extends State<MainPage> {
     return BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
       builder: (context, getSingleUserState) {
         if (getSingleUserState is GetSingleUserLoaded) {
-          Fluttertoast.showToast(msg: 'User Loaded');
           final currentUser = getSingleUserState.user;
           return Scaffold(
             backgroundColor: backGroundColor,

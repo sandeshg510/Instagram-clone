@@ -4,15 +4,20 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
+import 'package:instagram_clone/presentation/cubit/reel/get_single_reel/get_single_reel_cubit.dart';
 import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 import 'package:video_player/video_player.dart';
-
+import 'package:instagram_clone/injection_container.dart' as di;
 import '../../../cubit/reel/reel_cubit.dart';
 import '../../post/widgets/like_animation_widget.dart';
 
 class SingleReelCardWidget extends StatefulWidget {
   final ReelEntity reel;
-  const SingleReelCardWidget({super.key, required this.reel});
+  final String reelId;
+
+  const SingleReelCardWidget(
+      {super.key, required this.reel, required this.reelId});
 
   @override
   State<SingleReelCardWidget> createState() => _SingleReelCardWidgetState();
@@ -22,16 +27,25 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
   VideoPlayerController? playerController;
   bool play = true;
   bool _isLikeAnimating = false;
+  String _currentUid = '';
 
   @override
   void initState() {
+    BlocProvider.of<GetSingleReelCubit>(context)
+        .getSingleReel(reelId: widget.reelId);
     setState(() {
+      di.sl<GetCurrentUidUseCase>().call().then((value) {
+        setState(() {
+          _currentUid = value;
+          print('This is current UID $_currentUid');
+        });
+      });
       playerController = VideoPlayerController.network(widget.reel.reelUrl!);
     });
     playerController!.initialize();
-    // playerController!.play();
+    playerController!.play();
     playerController!.setVolume(2);
-    // playerController!.setLooping(true);
+    playerController!.setLooping(true);
 
     super.initState();
   }
@@ -104,19 +118,24 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
           child: Column(
             children: [
               GestureDetector(
-                onDoubleTap: () {
-                  _likePost();
+                  onTap: () {
+                    _likePost();
 
-                  setState(() {
-                    _isLikeAnimating = true;
-                  });
-                },
-                child: const Icon(
-                  CupertinoIcons.heart,
-                  color: Colors.white,
-                  size: 32,
-                ),
-              ),
+                    setState(() {
+                      _isLikeAnimating = true;
+                    });
+                  },
+                  child: widget.reel.likes!.contains(_currentUid)
+                      ? Icon(
+                          CupertinoIcons.heart_fill,
+                          color: Colors.red.shade600,
+                          size: 32,
+                        )
+                      : const Icon(
+                          CupertinoIcons.heart,
+                          color: Colors.white,
+                          size: 32,
+                        )),
               sizedBoxVer(3),
               Text(
                 "${widget.reel.totalLikes}",
@@ -145,11 +164,25 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
                 style: TextStyle(color: Colors.white, fontSize: 14),
               ),
               sizedBoxVer(22),
-              const Icon(
-                Icons.more_vert,
-                color: Colors.white,
-                size: 28,
-              ),
+              _currentUid == widget.reel.creatorUid
+                  ? GestureDetector(
+                      onTap: () {
+                        _openBottomModelSheet(context, widget.reel);
+                      },
+                      child: const Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    )
+                  : GestureDetector(
+                      onTap: () {},
+                      child: const Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
             ],
           ),
         ),
@@ -217,5 +250,68 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
     } else {
       playerController!.pause();
     }
+  }
+
+  _openBottomModelSheet(BuildContext context, ReelEntity reel) {
+    return showModalBottomSheet(
+        backgroundColor: backGroundColor,
+        context: context,
+        builder: (context) {
+          backGroundColor;
+          return SingleChildScrollView(
+              child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            height: 300,
+            decoration: BoxDecoration(
+                color: backGroundColor.withOpacity(0.8),
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20))),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Divider(
+                  color: secondaryColor.shade600,
+                  endIndent: 173,
+                  indent: 173,
+                  thickness: 3,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(
+                      right: 230, left: 30, bottom: 15, top: 20),
+                  child: Text(
+                    'More options',
+                    style: TextStyle(color: secondaryColor, fontSize: 18),
+                  ),
+                ),
+                GestureDetector(
+                  // onTap: _deletePost,
+                  child: const Padding(
+                    padding: EdgeInsets.only(
+                        right: 230, left: 30, bottom: 15, top: 10),
+                    child: Text(
+                      'Delete Post',
+                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    // Navigator.pushNamed(context, PageConst.updatePostPage,
+                    //     arguments: post);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.only(
+                        right: 230, left: 30, bottom: 15, top: 10),
+                    child: Text(
+                      'Update post',
+                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ));
+        });
   }
 }

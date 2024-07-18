@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:instagram_clone/domain/entities/chats/message_entity.dart';
 import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
@@ -37,7 +38,7 @@ abstract class FirebaseRepository {
 
   //Post
   Future<String> uploadImageToStorage(
-      File? file, bool isPost, String childName);
+      File? file, bool isPost, bool isMessage, String childName);
 
   //Reels
   uploadReelToStorage(
@@ -92,4 +93,9 @@ abstract class FirebaseRepository {
   Future<void> deleteReply(ReplyEntity reply);
 
   Future<void> likeReply(ReplyEntity reply);
+
+  //Chat features
+  Future<void> sendMessage(MessageEntity message, String groupId);
+
+  Stream<List<MessageEntity>> getMessages(String groupId);
 }

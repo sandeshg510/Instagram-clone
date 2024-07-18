@@ -36,7 +36,16 @@ class FirebaseConst {
   static const String users = 'users';
   static const String posts = 'posts';
   static const String reels = 'reels';
+  static const String chats = 'chats';
+  static const String chatroom = 'chatroom';
   static const String comments = 'comments';
   static const String replies = 'replies';
   static const String reply = 'reply';
+}
+
+class MessageConst {
+  static const String textMessage = 'TextMessage';
+  static const String image = 'Image';
+  static const String audio = 'Audio';
+  static const String attachment = 'Attachment';
 }

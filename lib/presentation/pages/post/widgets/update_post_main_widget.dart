@@ -182,7 +182,7 @@ class _UpdatePostMainWidgetState extends State<UpdatePostMainWidget> {
     } else {
       di
           .sl<UploadImageToStorageUseCase>()
-          .call(_image!, true, 'posts')
+          .call(_image!, true, false, 'posts')
           .then((imageUrl) => _submitUpdatedPost(image: imageUrl));
     }
   }

@@ -1,19 +1,9 @@
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/consts.dart';
-import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
-import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_image_to_storage_usecase.dart';
-import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
-import 'package:instagram_clone/presentation/pages/profile/widgets/profile_form_widget.dart';
-import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
-import 'package:uuid/uuid.dart';
-import 'package:instagram_clone/injection_container.dart' as di;
 import 'package:video_compress/video_compress.dart';
 
 import 'video_upload_form_widget.dart';
@@ -92,15 +82,12 @@ class _UploadReelMainWidgetState extends State<UploadReelMainWidget> {
           _videoPath = pickedVideoFile.path;
         } else {
           Fluttertoast.showToast(msg: 'no image has been selected');
-
-          print('no image has been selected');
         }
       });
 
       // return thumbnail;
     } catch (e) {
       Fluttertoast.showToast(msg: 'some error occurred $e');
-      print(e);
     }
   }
 

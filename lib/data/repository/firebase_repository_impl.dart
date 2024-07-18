@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:instagram_clone/data/data_sources/remote_data_sources/remote_data_sources.dart';
+import 'package:instagram_clone/domain/entities/chats/message_entity.dart';
 import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
 import 'package:instagram_clone/domain/entities/comment/reply/reply_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
@@ -48,8 +49,8 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
 
   @override
   Future<String> uploadImageToStorage(
-          File? file, bool isPost, String childName) async =>
-      remoteDataSource.uploadImageToStorage(file, isPost, childName);
+          File? file, bool isPost, bool isMessage, String childName) async =>
+      remoteDataSource.uploadImageToStorage(file, isPost, isMessage, childName);
 
   @override
   Future<void> createUserWithImage(UserEntity user, String profileUrl) async {
@@ -162,4 +163,12 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   @override
   Future<void> likeReel(ReelEntity reel) async =>
       remoteDataSource.likeReel(reel);
+
+  @override
+  Future<void> sendMessage(MessageEntity message, String groupId) async =>
+      remoteDataSource.sendMessage(message, groupId);
+
+  @override
+  Stream<List<MessageEntity>> getMessages(String groupId) =>
+      remoteDataSource.getMessages(groupId);
 }
