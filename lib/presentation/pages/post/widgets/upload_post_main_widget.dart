@@ -103,7 +103,7 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
               ),
               sizedBoxVer(10),
               Text(
-                '${widget.currentUser.username}',
+                '${widget.currentUser.name}',
                 style: const TextStyle(color: Colors.white),
               ),
               sizedBoxVer(10),
@@ -238,7 +238,7 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
           description: _descriptionController.text,
           postId: const Uuid().v1(),
           creatorUid: widget.currentUser.uid,
-          username: widget.currentUser.username,
+          username: widget.currentUser.name,
           postImageUrl: image,
           likes: [],
           totalLikes: 0,

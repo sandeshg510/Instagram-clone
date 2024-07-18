@@ -10,6 +10,7 @@ import 'package:instagram_clone/domain/entities/chats/message_entity.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
 import 'package:instagram_clone/presentation/cubit/chats/chats_cubit.dart';
 import 'package:instagram_clone/presentation/pages/chats/widgets/message_bubble.dart';
+import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 import '../../../../domain/entities/user/user_entity.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
 
@@ -73,14 +74,39 @@ class _ChatBoxMainWidgetState extends State<ChatBoxMainWidget> {
     return Scaffold(
       backgroundColor: backGroundColor,
       appBar: AppBar(
-        leading: const Icon(
-          CupertinoIcons.back,
-          color: primaryColor,
-        ),
         backgroundColor: backGroundColor,
-        title: Text(
-          widget.user.username!,
-          style: const TextStyle(color: primaryColor),
+        title: Row(
+          children: [
+            SizedBox(
+              width: 40,
+              height: 40,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: profileWidget(imageUrl: "${widget.user.profileUrl}"),
+              ),
+            ),
+            sizedBoxHor(10),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "${widget.user.name}",
+                  style: const TextStyle(
+                      color: primaryColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400),
+                ),
+                Text(
+                  "${widget.user.username}",
+                  style: const TextStyle(
+                      color: secondaryColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400),
+                ),
+              ],
+            )
+          ],
         ),
       ),
       body: Column(
@@ -146,9 +172,9 @@ class _ChatBoxMainWidgetState extends State<ChatBoxMainWidget> {
             borderRadius: BorderRadius.circular(25)),
         child: Row(
           children: [
-            sizedBoxHor(3),
+            sizedBoxHor(4),
             Container(
-              width: 35,
+              width: 40,
               alignment: Alignment.center,
               decoration:
                   const BoxDecoration(shape: BoxShape.circle, color: blueColor),
@@ -168,65 +194,52 @@ class _ChatBoxMainWidgetState extends State<ChatBoxMainWidget> {
             Flexible(
               flex: 2,
               child: TextField(
+                onChanged: (text) {
+                  setState(() {});
+                },
                 decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: ' Message...',
-                    hintStyle: TextStyle(color: secondaryColor)),
+                  border: InputBorder.none,
+                  hintText: ' Message...',
+                  hintStyle: TextStyle(color: secondaryColor),
+                ),
                 cursorColor: Colors.white,
                 controller: _messageController,
                 style: const TextStyle(color: primaryColor),
               ),
             ),
-
             Row(children: [
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.mic_none_outlined,
-                    size: 24,
-                    color: primaryColor,
-                  )),
-              IconButton(
-                  onPressed: () {
-                    selectImage(ImageSource.gallery);
-                  },
-                  icon: const Icon(
-                    Icons.image_rounded,
-                    size: 24,
-                    color: primaryColor,
-                  )),
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.mode_comment_outlined,
-                    size: 24,
-                    color: primaryColor,
-                  )),
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.add_circle_outline_sharp,
-                    size: 24,
-                    color: primaryColor,
-                  )),
+              _messageController!.text.isNotEmpty
+                  ? sizedBoxHor(0)
+                  : IconButton(
+                      onPressed: () {
+                        selectImage(ImageSource.gallery);
+                      },
+                      icon: const Icon(
+                        Icons.image_rounded,
+                        size: 24,
+                        color: primaryColor,
+                      )),
+              _messageController!.text.isNotEmpty
+                  ? TextButton(
+                      onPressed: () {
+                        _sendMessages();
+                      },
+                      child: const Text(
+                        'Send',
+                        style: TextStyle(
+                            color: blueColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
+                      ))
+                  : IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.add_circle_outline_sharp,
+                        size: 24,
+                        color: primaryColor,
+                      )),
+              sizedBoxHor(10)
             ]),
-            // Container(
-            //   width: 45,
-            //   decoration: BoxDecoration(
-            //       shape: BoxShape.circle, color: Colors.grey.shade200),
-            //   child: Center(
-            //     child: IconButton(
-            //       color: Colors.teal,
-            //       onPressed: () {
-            //         _sendMessages();
-            //       },
-            //       icon: const Icon(
-            //         Icons.send_rounded,
-            //         size: 35,
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
