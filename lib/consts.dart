@@ -46,6 +46,6 @@ class FirebaseConst {
 class MessageConst {
   static const String textMessage = 'TextMessage';
   static const String image = 'Image';
-  static const String audio = 'Audio';
+  static const String voiceNote = 'VoiceNote';
   static const String attachment = 'Attachment';
 }

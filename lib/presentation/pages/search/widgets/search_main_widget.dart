@@ -7,6 +7,8 @@ import 'package:instagram_clone/domain/entities/user/user_entity.dart';
 import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/user_cubit.dart';
 import 'package:instagram_clone/presentation/pages/search/widgets/search_widget.dart';
+import 'package:instagram_clone/presentation/pages/search/widgets/shimmer_posts_widget.dart';
+import 'package:instagram_clone/presentation/pages/search/widgets/shimmer_search_widget.dart';
 import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 
 class SearchMainWidget extends StatefulWidget {
@@ -40,113 +42,131 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backGroundColor,
-      body: BlocBuilder<UserCubit, UserState>(
-        builder: (context, userState) {
-          if (userState is UserLoaded) {
-            final filterAllUsers = userState.users
-                .where(
-                  (user) =>
-                      user.username!.startsWith(_searchController.text) ||
-                      user.username!
-                          .toLowerCase()
-                          .startsWith(_searchController.text.toLowerCase()) ||
-                      user.username!.contains(_searchController.text) ||
-                      user.username!
-                          .toLowerCase()
-                          .contains(_searchController.text),
-                )
-                .toList();
-            return SafeArea(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-                child: Column(
-                  children: [
-                    SearchWidget(controller: _searchController),
-                    sizedBoxVer(10),
-                    _searchController.text.isNotEmpty
-                        ? Expanded(
-                            child: ListView.builder(
-                                itemCount: filterAllUsers.length,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushNamed(context,
-                                          PageConst.singleUserProfilePage,
-                                          arguments: filterAllUsers[index].uid);
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.symmetric(
-                                              vertical: 10),
-                                          width: 40,
-                                          height: 40,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            child: profileWidget(
-                                                imageUrl: filterAllUsers[index]
-                                                    .profileUrl),
+      body: SafeArea(
+        child: BlocBuilder<UserCubit, UserState>(
+          builder: (context, userState) {
+            if (userState is UserLoading) {
+              return const SafeArea(
+                  child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                      child: ShimmerSearchWidget()));
+            }
+            if (userState is UserLoaded) {
+              final filterAllUsers = userState.users
+                  .where(
+                    (user) =>
+                        user.username!.startsWith(_searchController.text) ||
+                        user.username!
+                            .toLowerCase()
+                            .startsWith(_searchController.text.toLowerCase()) ||
+                        user.username!.contains(_searchController.text) ||
+                        user.username!
+                            .toLowerCase()
+                            .contains(_searchController.text),
+                  )
+                  .toList();
+              return SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 10),
+                  child: Column(
+                    children: [
+                      SearchWidget(controller: _searchController),
+                      sizedBoxVer(10),
+                      _searchController.text.isNotEmpty
+                          ? Expanded(
+                              child: ListView.builder(
+                                  itemCount: filterAllUsers.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(context,
+                                            PageConst.singleUserProfilePage,
+                                            arguments:
+                                                filterAllUsers[index].uid);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            width: 40,
+                                            height: 40,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              child: profileWidget(
+                                                  imageUrl:
+                                                      filterAllUsers[index]
+                                                          .profileUrl),
+                                            ),
                                           ),
-                                        ),
-                                        sizedBoxHor(10),
-                                        Text(
-                                          '${filterAllUsers[index].username}',
-                                          style: const TextStyle(
-                                              color: primaryColor),
-                                        )
-                                      ],
+                                          sizedBoxHor(10),
+                                          Text(
+                                            '${filterAllUsers[index].username}',
+                                            style: const TextStyle(
+                                                color: primaryColor),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                            )
+                          : BlocBuilder<PostCubit, PostState>(
+                              builder: (context, postState) {
+                                if (postState is PostLoading) {
+                                  return const ShimmerPostsWidget();
+                                }
+                                if (postState is PostLoaded) {
+                                  final posts = postState.posts;
+                                  return Expanded(
+                                    child: GridView.builder(
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3,
+                                              crossAxisSpacing: 5,
+                                              mainAxisSpacing: 5),
+                                      itemCount: posts.length,
+                                      physics: const ScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(context,
+                                                PageConst.postDetailPage,
+                                                arguments: posts[index].postId);
+                                          },
+                                          child: SizedBox(
+                                            width: 100,
+                                            height: 100,
+                                            child: profileWidget(
+                                                imageUrl:
+                                                    posts[index].postImageUrl),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   );
-                                }),
-                          )
-                        : BlocBuilder<PostCubit, PostState>(
-                            builder: (context, postState) {
-                              if (postState is PostLoaded) {
-                                final posts = postState.posts;
-                                return Expanded(
-                                  child: GridView.builder(
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3,
-                                            crossAxisSpacing: 5,
-                                            mainAxisSpacing: 5),
-                                    itemCount: posts.length,
-                                    physics: const ScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                              context, PageConst.postDetailPage,
-                                              arguments: posts[index].postId);
-                                        },
-                                        child: SizedBox(
-                                          width: 100,
-                                          height: 100,
-                                          child: profileWidget(
-                                              imageUrl:
-                                                  posts[index].postImageUrl),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
-                              }
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            },
-                          )
-                  ],
+                                }
+                                return const ShimmerPostsWidget();
+                              },
+                            )
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
+              );
+            }
+            return const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                child: Column(
+                  children: [
+                    ShimmerSearchWidget(),
+                    ShimmerPostsWidget(),
+                  ],
+                ));
+          },
+        ),
       ),
     );
   }

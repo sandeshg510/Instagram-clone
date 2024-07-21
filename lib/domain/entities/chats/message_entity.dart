@@ -7,6 +7,7 @@ class MessageEntity extends Equatable {
   final String? chatId;
   final String? message;
   final String? imageUrl;
+  final String? voiceNoteUrl;
   final String? messageType;
   final Timestamp? createAt;
   final bool? isLike;
@@ -16,6 +17,7 @@ class MessageEntity extends Equatable {
     this.chatId,
     this.message,
     this.imageUrl,
+    this.voiceNoteUrl,
     this.messageType,
     this.createAt,
     this.isLike,
@@ -28,6 +30,7 @@ class MessageEntity extends Equatable {
         chatId,
         message,
         imageUrl,
+        voiceNoteUrl,
         messageType,
         createAt,
         isLike,

@@ -171,4 +171,8 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   @override
   Stream<List<MessageEntity>> getMessages(String groupId) =>
       remoteDataSource.getMessages(groupId);
+
+  @override
+  Future<String> uploadVoiceNoteToStorage(String voiceNotePath) async =>
+      remoteDataSource.uploadVoiceNoteToStorage(voiceNotePath);
 }

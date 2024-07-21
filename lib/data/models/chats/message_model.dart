@@ -6,6 +6,8 @@ class MessageModel extends MessageEntity {
   final String? chatId;
   final String? message;
   final String? imageUrl;
+  final String? voiceNoteUrl;
+
   final String? messageType;
   final Timestamp? createAt;
   final bool? isLike;
@@ -14,6 +16,7 @@ class MessageModel extends MessageEntity {
     this.chatId,
     this.message,
     this.imageUrl,
+    this.voiceNoteUrl,
     this.messageType,
     this.isLike,
     this.createAt,
@@ -22,6 +25,7 @@ class MessageModel extends MessageEntity {
           chatId: chatId,
           message: message,
           imageUrl: imageUrl,
+          voiceNoteUrl: voiceNoteUrl,
           messageType: messageType,
           isLike: isLike,
           createAt: createAt,
@@ -37,6 +41,7 @@ class MessageModel extends MessageEntity {
       chatId: snapshot['commentId'],
       message: snapshot['message'],
       imageUrl: snapshot['imageUrl'],
+      voiceNoteUrl: snapshot['voiceNoteUrl'],
       messageType: snapshot['messageType'],
       isLike: snapshot['isLike'],
     );
@@ -48,6 +53,7 @@ class MessageModel extends MessageEntity {
         'creatorUid': creatorUid,
         'message': message,
         'imageUrl': imageUrl,
+        'voiceNoteUrl': voiceNoteUrl,
         'messageType': messageType,
         'isLike': isLike,
       };

@@ -32,9 +32,8 @@ class _MessengerPageState extends State<MessengerPage> {
     return Scaffold(
         backgroundColor: backGroundColor,
         appBar: AppBar(
-          leading: const Icon(
-            CupertinoIcons.back,
-            color: primaryColor,
+          iconTheme: const IconThemeData(
+            color: primaryColor, //change your color here
           ),
           backgroundColor: backGroundColor,
           title: const Text(
@@ -91,9 +90,10 @@ class _MessengerPageState extends State<MessengerPage> {
                           ),
                           sizedBoxHor(20),
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                user.username!,
+                                user.name!,
                                 style: const TextStyle(color: primaryColor),
                               ),
                               const Text(

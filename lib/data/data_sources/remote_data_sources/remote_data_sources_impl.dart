@@ -219,6 +219,17 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     return await imageUrl;
   }
 
+  @override
+  Future<String> uploadVoiceNoteToStorage(String voiceNotePath) async {
+    String name = DateTime.now().toString();
+    final ref = FirebaseStorage.instance.ref('voice/$name');
+    await ref.putFile(File(voiceNotePath));
+    String downloadUrl = await ref.getDownloadURL();
+    print('uploaded');
+    Fluttertoast.showToast(msg: 'voice message sent successfully!');
+    return downloadUrl;
+  }
+
   compressVideoFile(String videoFilePath) async {
     final compressedVideoFile = await VideoCompress.compressVideo(videoFilePath,
         quality: VideoQuality.LowQuality);
@@ -497,9 +508,10 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final newMessage = MessageModel(
       message: message.message,
       imageUrl: message.imageUrl,
+      voiceNoteUrl: message.voiceNoteUrl,
       messageType: message.messageType,
       chatId: message.chatId,
-      createAt: message.createAt,
+      createAt: Timestamp.now(),
       isLike: message.isLike,
       creatorUid: message.creatorUid,
     ).toJson();

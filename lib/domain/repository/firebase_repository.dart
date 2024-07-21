@@ -48,6 +48,9 @@ abstract class FirebaseRepository {
 
   Future<String> uploadReelThumbnailToStorage(String videoFilePath);
 
+  //Messages
+  Future<String> uploadVoiceNoteToStorage(String voiceNotePath);
+
   //Reels Features
   Future<void> createReel(ReelEntity reel);
 

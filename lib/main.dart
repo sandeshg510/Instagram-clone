@@ -37,8 +37,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<ReelCubit>()),
       ],
       child: MaterialApp(
+        theme: ThemeData.light(),
         debugShowCheckedModeBanner: false,
-        darkTheme: ThemeData.dark(),
         onGenerateRoute: OnGenerateRoute.route,
         initialRoute: '/',
         routes: {

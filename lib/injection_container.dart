@@ -28,6 +28,7 @@ import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/like_ree
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_image_to_storage_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_reel_to_storage_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_thumbnail_to_storage_usecase.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_voice_note_to_storage_usecaes.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/create_user_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/create_user_with_image_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/follow_unfollow_user_usecase.dart';
@@ -160,6 +161,8 @@ Future<void> init() async {
       () => UploadThumbnailToStorageUseCase(repository: sl.call()));
   sl.registerLazySingleton(
       () => UploadReelToStorageUseCase(repository: sl.call()));
+  sl.registerLazySingleton(
+      () => UploadVoiceNoteToStorage(repository: sl.call()));
 
   //Post
   sl.registerLazySingleton(() => CreatePostUseCase(repository: sl.call()));

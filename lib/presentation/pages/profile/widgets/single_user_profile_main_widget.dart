@@ -61,11 +61,8 @@ class _SingleUserProfilePageSMainWidget
                 singleUser.username!,
                 style: const TextStyle(color: primaryColor),
               ),
-              leading: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: const Icon(Icons.arrow_back_ios, color: primaryColor),
+              iconTheme: const IconThemeData(
+                color: primaryColor, //change your color here
               ),
               actions: [
                 _currentUid == singleUser.uid
