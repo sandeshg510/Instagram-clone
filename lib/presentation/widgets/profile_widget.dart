@@ -17,9 +17,11 @@ profileWidget({String? imageUrl, File? image}) {
         fit: BoxFit.cover,
         progressIndicatorBuilder: (context, url, downloadProgress) {
           return Shimmer.fromColors(
-              baseColor: Colors.grey.shade700,
-              highlightColor: Colors.grey.shade900,
-              child: const SizedBox());
+              baseColor: Colors.white12,
+              highlightColor: Colors.white24,
+              child: Container(
+                color: Colors.grey.shade600,
+              ));
         },
         errorWidget: (context, url, error) {
           return Image.asset(

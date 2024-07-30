@@ -8,7 +8,7 @@ Here I've used the followings :
 - Firebase
 - Cloud Firestore
 
-Here I've implemeted the following features :
+Here I've implemented the following features :
 - Messaging, Posts, comments, profile, likes, following, followers, Search
 - CRUD operations on Profile, posts, comments, replies
 - animations

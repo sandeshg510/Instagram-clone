@@ -6,8 +6,8 @@ import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
 import 'package:instagram_clone/presentation/pages/chats/messenger_page.dart';
-import 'package:instagram_clone/presentation/pages/chats/widgets/voice_animating_widget.dart';
 import 'package:instagram_clone/presentation/pages/chats/widgets/voice_message_bubble.dart';
+import 'package:instagram_clone/presentation/pages/home/widgets/post_shimmer.dart';
 import 'package:instagram_clone/presentation/pages/home/widgets/single_post_card_widget.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
 
@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
         child: BlocBuilder<PostCubit, PostState>(
           builder: (context, postState) {
             if (postState is PostLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const PostShimmer();
             }
             if (postState is PostFailure) {
               Fluttertoast.showToast(
