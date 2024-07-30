@@ -15,10 +15,10 @@ class ShimmerPostsWidget extends StatelessWidget {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade400,
+            baseColor: Colors.white12,
+            highlightColor: Colors.white24,
             child: Container(
-              color: Colors.white70,
+              color: Colors.grey.shade600,
               width: 100,
               height: 100,
             ),

@@ -11,13 +11,14 @@ class ShimmerSearchWidget extends StatelessWidget {
     return Column(
       children: [
         Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade400,
+          baseColor: Colors.white12,
+          highlightColor: Colors.white24,
           child: Container(
             width: double.infinity,
             height: 45,
             decoration: BoxDecoration(
-                color: Colors.white70, borderRadius: BorderRadius.circular(15)),
+                color: Colors.grey.shade600,
+                borderRadius: BorderRadius.circular(15)),
           ),
         ),
         sizedBoxVer(10),

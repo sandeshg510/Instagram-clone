@@ -66,9 +66,16 @@ class _MainPageState extends State<MainPage> {
                   color: primaryColor,
                   height: 20,
                 )),
-                const BottomNavigationBarItem(icon: Icon(Icons.search_sharp)),
                 const BottomNavigationBarItem(
-                    icon: Icon(Icons.add_circle_outline_sharp)),
+                    icon: Icon(
+                  Icons.search_sharp,
+                  color: primaryColor,
+                )),
+                const BottomNavigationBarItem(
+                    icon: Icon(
+                  Icons.add_circle_outline_sharp,
+                  color: primaryColor,
+                )),
                 BottomNavigationBarItem(
                     icon: Image.asset(
                   'assets/reels_logo.png',
@@ -76,7 +83,10 @@ class _MainPageState extends State<MainPage> {
                   height: 20,
                 )),
                 const BottomNavigationBarItem(
-                    icon: Icon(Icons.account_circle_sharp)),
+                    icon: Icon(
+                  Icons.account_circle_sharp,
+                  color: primaryColor,
+                )),
               ],
               onTap: navigationTapped,
             ),

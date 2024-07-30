@@ -40,6 +40,7 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
     return Container(
       height: 50,
       width: widget.width,
+      alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
         color: Colors.white12.withOpacity(.35),
         borderRadius: BorderRadius.circular(3),

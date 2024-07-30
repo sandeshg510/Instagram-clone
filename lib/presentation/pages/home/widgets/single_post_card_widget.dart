@@ -136,25 +136,14 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                             CupertinoIcons.heart_fill,
                             size: 26,
                             color: Colors.red,
-                          )
-                          // Image.asset(
-                          //   'assets/instagram_red_heart.png',
-                          //   height: 22,
-                          // ),
-                          )
+                          ))
                       : GestureDetector(
                           onTap: _likePost,
                           child: const Icon(
                             CupertinoIcons.heart,
                             size: 26,
                             color: secondaryColor,
-                          )
-                          // Image.asset(
-                          //   'assets/heart.png',
-                          //   color: secondaryColor,
-                          //   height: 22,
-                          // ),
-                          ),
+                          )),
                   sizedBoxHor(15),
                   InkWell(
                     onTap: () {

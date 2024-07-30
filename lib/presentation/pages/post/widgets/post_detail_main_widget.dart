@@ -125,7 +125,7 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        Container(
+                        SizedBox(
                           height: size.height * 0.3,
                           width: double.infinity,
                           child:
@@ -163,21 +163,20 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                                   onTap: () {
                                     _likePost();
                                   },
-                                  child: Image.asset(
-                                    'assets/red-heart-11121.png',
-                                    height: 22,
-                                  ),
-                                )
+                                  child: const Icon(
+                                    CupertinoIcons.heart_fill,
+                                    size: 26,
+                                    color: Colors.red,
+                                  ))
                               : GestureDetector(
                                   onTap: () {
                                     _likePost();
                                   },
-                                  child: Image.asset(
-                                    'assets/heart.png',
+                                  child: const Icon(
+                                    CupertinoIcons.heart,
+                                    size: 26,
                                     color: secondaryColor,
-                                    height: 22,
-                                  ),
-                                ),
+                                  )),
                           sizedBoxHor(15),
                           InkWell(
                             onTap: () {
