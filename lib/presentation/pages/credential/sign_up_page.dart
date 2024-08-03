@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,8 +13,6 @@ import 'package:instagram_clone/presentation/pages/main_screen/main_page.dart';
 import 'package:instagram_clone/presentation/widgets/button_container_widget.dart';
 import 'package:instagram_clone/presentation/widgets/form_container_widget.dart';
 import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
-
-import '../../../main.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -62,7 +58,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-
     MediaQuery.of(context).viewInsets.bottom;
     // SchedulerBinding.instance.addPostFrameCallback((rerun) {
     // });
@@ -97,7 +92,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   _bodyWidget() {
     return Scaffold(
-      backgroundColor: backGroundColor,
       body: Padding(
         padding:
             const EdgeInsets.only(left: 10.0, right: 10, top: 10, bottom: 10),
@@ -107,14 +101,14 @@ class _SignUpPageState extends State<SignUpPage> {
             Center(
               child: SvgPicture.asset(
                 'assets/ic_instagram.svg',
-                color: primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             sizedBoxVer(18),
             Center(
               child: Stack(
                 children: [
-                  Container(
+                  SizedBox(
                       height: 70,
                       width: 70,
                       child: ClipRRect(
@@ -181,14 +175,12 @@ class _SignUpPageState extends State<SignUpPage> {
                 : const SizedBox(width: 0, height: 0),
             Container(),
             Flexible(flex: 1, child: Container()),
-
-          const Divider(),
+            const Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
                   "Already have an account? ",
-                  style: TextStyle(color: primaryColor),
                 ),
                 InkWell(
                   onTap: () {
@@ -198,7 +190,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: const Text(
                     "Sign In.",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: primaryColor),
+                        fontWeight: FontWeight.bold, color: blueColor),
                   ),
                 ),
               ],

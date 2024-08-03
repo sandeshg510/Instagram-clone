@@ -19,9 +19,7 @@ class HomePage extends StatelessWidget {
     Size size = MediaQuery.sizeOf(context);
 
     return Scaffold(
-      backgroundColor: backGroundColor,
       appBar: AppBar(
-        backgroundColor: backGroundColor,
         title: GestureDetector(
           onTap: () {
             Navigator.push(
@@ -34,7 +32,7 @@ class HomePage extends StatelessWidget {
           },
           child: SvgPicture.asset(
             'assets/ic_instagram.svg',
-            color: primaryColor,
+            color: Theme.of(context).colorScheme.primary,
             height: 32,
           ),
         ),
@@ -50,7 +48,7 @@ class HomePage extends StatelessWidget {
               },
               icon: Image.asset(
                 'assets/messenger.png',
-                color: primaryColor,
+                color: Theme.of(context).colorScheme.primary,
                 height: 22,
               ),
             ),
@@ -90,7 +88,7 @@ class HomePage extends StatelessWidget {
 
   _openBottomModelSheet(BuildContext context) {
     return showModalBottomSheet(
-        backgroundColor: backGroundColor,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         context: context,
         builder: (context) {
           backGroundColor;
@@ -99,7 +97,7 @@ class HomePage extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 10),
             height: 300,
             decoration: BoxDecoration(
-                color: backGroundColor.withOpacity(0.8),
+                color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
@@ -112,22 +110,26 @@ class HomePage extends StatelessWidget {
                   indent: 173,
                   thickness: 3,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                       right: 230, left: 30, bottom: 15, top: 20),
                   child: Text(
                     'More options',
-                    style: TextStyle(color: secondaryColor, fontSize: 18),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 18),
                   ),
                 ),
                 GestureDetector(
                   onTap: () {},
-                  child: const Padding(
-                    padding: EdgeInsets.only(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
                         right: 230, left: 30, bottom: 15, top: 10),
                     child: Text(
                       'Delete Post',
-                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 18),
                     ),
                   ),
                 ),
@@ -135,12 +137,14 @@ class HomePage extends StatelessWidget {
                   onTap: () {
                     Navigator.pushNamed(context, PageConst.updatePostPage);
                   },
-                  child: const Padding(
-                    padding: EdgeInsets.only(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
                         right: 230, left: 30, bottom: 15, top: 10),
                     child: Text(
                       'Update post',
-                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 18),
                     ),
                   ),
                 ),

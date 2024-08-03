@@ -41,7 +41,6 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backGroundColor,
       body: SafeArea(
         child: BlocBuilder<UserCubit, UserState>(
           builder: (context, userState) {

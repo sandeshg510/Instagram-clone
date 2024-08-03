@@ -46,7 +46,9 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
         borderRadius: BorderRadius.circular(3),
       ),
       child: TextFormField(
-        style: const TextStyle(color: primaryColor),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
+        ),
         controller: widget.controller,
         keyboardType: widget.inputType,
         key: widget.fieldKey,
@@ -59,7 +61,9 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
           filled: true,
           fillColor: darkGreyColor.withOpacity(0.15),
           hintText: widget.hintText,
-          hintStyle: const TextStyle(color: secondaryColor),
+          hintStyle: TextStyle(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
           suffixIcon: GestureDetector(
             onTap: () {
               setState(() {
@@ -69,7 +73,9 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
             child: widget.isPasswordField == true
                 ? Icon(
                     _obscureText ? Icons.visibility_off : Icons.visibility,
-                    color: _obscureText == false ? blueColor : secondaryColor,
+                    color: _obscureText == false
+                        ? blueColor
+                        : Theme.of(context).colorScheme.secondary,
                   )
                 : const Text(""),
           ),

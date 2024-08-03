@@ -23,7 +23,6 @@ class _ReelsPageState extends State<ReelsPage> {
     PageController pageController = PageController();
 
     return Scaffold(
-      backgroundColor: backGroundColor,
       body: BlocProvider(
         create: (context) => di.sl<ReelCubit>()..getReels(reel: ReelEntity()),
         child: BlocBuilder<ReelCubit, ReelState>(builder: (context, reelState) {

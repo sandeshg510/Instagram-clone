@@ -11,19 +11,22 @@ class SearchWidget extends StatelessWidget {
       width: double.infinity,
       height: 45,
       decoration: BoxDecoration(
-          color: secondaryColor.withOpacity(.3),
+          color: Theme.of(context).colorScheme.secondary.withOpacity(.3),
           borderRadius: BorderRadius.circular(15)),
       child: TextFormField(
         controller: controller,
-        style: const TextStyle(color: primaryColor),
-        decoration: const InputDecoration(
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        decoration: InputDecoration(
             border: InputBorder.none,
             prefixIcon: Icon(
               Icons.search,
-              color: primaryColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
             hintText: 'Search',
-            hintStyle: TextStyle(color: secondaryColor, fontSize: 15)),
+            hintStyle: TextStyle(
+                color: Theme.of(context).colorScheme.secondary, fontSize: 15)),
       ),
     );
   }

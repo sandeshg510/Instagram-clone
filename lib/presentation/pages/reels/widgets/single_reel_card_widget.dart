@@ -73,7 +73,7 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
           child: Center(
             child: SizedBox(
               height: size.height * 0.9,
-              width: size.width * 0.99,
+              width: size.width * 1,
               child: VideoPlayer(playerController!),
             ),
           ),

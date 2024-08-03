@@ -1,12 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/presentation/cubit/credential/credential_cubit.dart';
+import 'package:instagram_clone/presentation/cubit/theme/theme_cubit.dart';
+import 'package:instagram_clone/presentation/global/theme/app_theme.dart';
 import 'package:instagram_clone/presentation/widgets/button_container_widget.dart';
 import 'package:instagram_clone/presentation/widgets/form_container_widget.dart';
-
 import '../../cubit/auth/auth_cubit.dart';
 import '../main_screen/main_page.dart';
 
@@ -32,8 +34,19 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = AppTheme.lightTheme;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: backGroundColor,
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              padding: const EdgeInsets.only(right: 30, top: 20),
+              onPressed: () {
+                BlocProvider.of<ThemeCubit>(context).toggleTheme(isDarkMode);
+              },
+              icon: const Icon(CupertinoIcons.moon_circle)),
+        ],
+      ),
       body: BlocConsumer<CredentialCubit, CredentialState>(
         listener: (context, credentialState) {
           if (credentialState is CredentialSuccess) {
@@ -70,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
           Center(
             child: SvgPicture.asset(
               'assets/ic_instagram.svg',
-              color: primaryColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
           sizedBoxVer(30),
@@ -97,10 +110,10 @@ class _LoginPageState extends State<LoginPage> {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       'Please wait',
                       style: TextStyle(
-                          color: primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                           fontSize: 16,
                           fontWeight: FontWeight.w400),
                     ),
@@ -116,7 +129,6 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const Text(
                 "Don't have and account? ",
-                style: TextStyle(color: primaryColor),
               ),
               InkWell(
                 onTap: () {
@@ -126,8 +138,8 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 child: const Text(
                   "Sign Up.",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: primaryColor),
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, color: blueColor),
                 ),
               ),
             ],

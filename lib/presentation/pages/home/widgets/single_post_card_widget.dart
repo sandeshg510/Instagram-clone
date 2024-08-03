@@ -65,8 +65,9 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                     sizedBoxHor(10),
                     Text(
                       "${widget.post.username}",
-                      style: const TextStyle(
-                          color: primaryColor, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold),
                     )
                   ],
                 ),
@@ -76,9 +77,9 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                       onTap: () {
                         _openBottomModelSheet(context, widget.post);
                       },
-                      child: const Icon(
+                      child: Icon(
                         Icons.more_vert,
-                        color: primaryColor,
+                        color: Theme.of(context).colorScheme.primary,
                       ))
                   : const SizedBox(
                       width: 0,
@@ -99,7 +100,6 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
               children: [
                 SizedBox(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.30,
                   child: profileWidget(imageUrl: "${widget.post.postImageUrl}"),
                 ),
                 AnimatedOpacity(
@@ -139,10 +139,10 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                           ))
                       : GestureDetector(
                           onTap: _likePost,
-                          child: const Icon(
+                          child: Icon(
                             CupertinoIcons.heart,
                             size: 26,
-                            color: secondaryColor,
+                            color: Theme.of(context).colorScheme.secondary,
                           )),
                   sizedBoxHor(15),
                   InkWell(
@@ -153,21 +153,21 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                     },
                     child: Image.asset(
                       'assets/chat.png',
-                      color: secondaryColor,
+                      color: Theme.of(context).colorScheme.secondary,
                       height: 20,
                     ),
                   ),
                   sizedBoxHor(15),
                   Image.asset(
                     'assets/send.png',
-                    color: secondaryColor,
+                    color: Theme.of(context).colorScheme.secondary,
                     height: 20,
                   ),
                 ],
               ),
               Image.asset(
                 'assets/bookmark.png',
-                color: secondaryColor,
+                color: Theme.of(context).colorScheme.secondary,
                 height: 20,
               ),
             ],
@@ -175,8 +175,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
           sizedBoxVer(10),
           Text(
             '${widget.post.totalLikes} likes',
-            style: const TextStyle(
-                color: primaryColor, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Row(
             children: [
@@ -184,13 +183,11 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                 children: [
                   Text(
                     '${widget.post.username}',
-                    style: const TextStyle(
-                        color: primaryColor, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   sizedBoxHor(10),
                   Text(
                     '${widget.post.description}',
-                    style: const TextStyle(color: primaryColor),
                   ),
                 ],
               )
@@ -220,7 +217,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
 
   _openBottomModelSheet(BuildContext context, PostEntity post) {
     return showModalBottomSheet(
-        backgroundColor: backGroundColor,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         context: context,
         builder: (context) {
           backGroundColor;
@@ -229,7 +226,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
             margin: const EdgeInsets.symmetric(vertical: 10),
             height: 300,
             decoration: BoxDecoration(
-                color: backGroundColor.withOpacity(0.8),
+                color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
@@ -242,22 +239,26 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                   indent: 173,
                   thickness: 3,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                       right: 230, left: 30, bottom: 15, top: 20),
                   child: Text(
                     'More options',
-                    style: TextStyle(color: secondaryColor, fontSize: 18),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 18),
                   ),
                 ),
                 GestureDetector(
                   onTap: _deletePost,
-                  child: const Padding(
-                    padding: EdgeInsets.only(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
                         right: 230, left: 30, bottom: 15, top: 10),
                     child: Text(
                       'Delete Post',
-                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 18),
                     ),
                   ),
                 ),
@@ -266,12 +267,14 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                     Navigator.pushNamed(context, PageConst.updatePostPage,
                         arguments: post);
                   },
-                  child: const Padding(
-                    padding: EdgeInsets.only(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
                         right: 230, left: 30, bottom: 15, top: 10),
                     child: Text(
                       'Update post',
-                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 18),
                     ),
                   ),
                 ),

@@ -15,7 +15,6 @@ class UploadPage extends StatelessWidget {
     return BlocProvider<PostCubit>(
         create: (context) => di.sl<PostCubit>(),
         child: Scaffold(
-          backgroundColor: backGroundColor,
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

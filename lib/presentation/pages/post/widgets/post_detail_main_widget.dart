@@ -46,21 +46,17 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: backGroundColor,
         leading: GestureDetector(
             onTap: () {
               Navigator.pop(context);
             },
             child: const Icon(
               CupertinoIcons.back,
-              color: primaryColor,
             )),
         title: const Text(
           'Post Detail',
-          style: TextStyle(color: primaryColor),
         ),
       ),
-      backgroundColor: backGroundColor,
       body: BlocBuilder<GetSinglePostCubit, GetSinglePostState>(
         builder: (context, getSinglePostState) {
           if (getSinglePostState is GetSinglePostLoaded) {
@@ -89,7 +85,6 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                           sizedBoxHor(size.width * 0.027),
                           Text(
                             '${singlePost.username}',
-                            style: const TextStyle(color: primaryColor),
                           ),
                         ],
                       ),
@@ -98,18 +93,18 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                               onTap: () {
                                 _openBottomModelSheet(context, singlePost);
                               },
-                              child: const Icon(
+                              child: Icon(
                                 Icons.more_vert,
-                                color: primaryColor,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             )
                           : GestureDetector(
                               onTap: () {
                                 // _openBottomModelSheetForOtherUser(context, singlePost);
                               },
-                              child: const Icon(
+                              child: Icon(
                                 Icons.more_vert,
-                                color: primaryColor,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             )
                     ],
@@ -145,7 +140,7 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                               child: const Icon(
                                 CupertinoIcons.suit_heart_fill,
                                 size: 100,
-                                color: primaryColor,
+                                color: AppColors.red,
                               )),
                         ),
                       ],
@@ -172,10 +167,11 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                                   onTap: () {
                                     _likePost();
                                   },
-                                  child: const Icon(
+                                  child: Icon(
                                     CupertinoIcons.heart,
                                     size: 26,
-                                    color: secondaryColor,
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
                                   )),
                           sizedBoxHor(15),
                           InkWell(
@@ -188,21 +184,21 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                             },
                             child: Image.asset(
                               'assets/chat.png',
-                              color: secondaryColor,
+                              color: Theme.of(context).colorScheme.secondary,
                               height: 20,
                             ),
                           ),
                           sizedBoxHor(15),
                           Image.asset(
                             'assets/send.png',
-                            color: secondaryColor,
+                            color: Theme.of(context).colorScheme.secondary,
                             height: 20,
                           ),
                         ],
                       ),
                       Image.asset(
                         'assets/bookmark.png',
-                        color: secondaryColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         height: 20,
                       ),
                     ],
@@ -210,8 +206,7 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                   sizedBoxVer(10),
                   Text(
                     '${singlePost.totalLikes} likes',
-                    style: const TextStyle(
-                        color: primaryColor, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Row(
                     children: [
@@ -219,14 +214,11 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                         children: [
                           Text(
                             '${singlePost.username}',
-                            style: const TextStyle(
-                                color: primaryColor,
-                                fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           sizedBoxHor(10),
                           Text(
                             '${singlePost.description}',
-                            style: const TextStyle(color: primaryColor),
                           ),
                         ],
                       )
@@ -264,16 +256,16 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
 
   _openBottomModelSheet(BuildContext context, PostEntity post) {
     return showModalBottomSheet(
-        backgroundColor: backGroundColor,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         context: context,
         builder: (context) {
-          backGroundColor;
+          Theme.of(context).colorScheme.tertiary;
           return SingleChildScrollView(
               child: Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
             height: 300,
             decoration: BoxDecoration(
-                color: backGroundColor.withOpacity(0.8),
+                color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
@@ -281,27 +273,31 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Divider(
-                  color: secondaryColor.shade600,
+                  color: Theme.of(context).colorScheme.secondary,
                   endIndent: 173,
                   indent: 173,
                   thickness: 3,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                       right: 230, left: 30, bottom: 15, top: 20),
                   child: Text(
                     'More options',
-                    style: TextStyle(color: secondaryColor, fontSize: 18),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 18),
                   ),
                 ),
                 GestureDetector(
                   onTap: _deletePost,
-                  child: const Padding(
-                    padding: EdgeInsets.only(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
                         right: 230, left: 30, bottom: 15, top: 10),
                     child: Text(
                       'Delete Post',
-                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 18),
                     ),
                   ),
                 ),
@@ -310,12 +306,14 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
                     Navigator.pushNamed(context, PageConst.updatePostPage,
                         arguments: post);
                   },
-                  child: const Padding(
-                    padding: EdgeInsets.only(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
                         right: 230, left: 30, bottom: 15, top: 10),
                     child: Text(
                       'Update post',
-                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 18),
                     ),
                   ),
                 ),

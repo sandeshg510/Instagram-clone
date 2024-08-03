@@ -20,8 +20,14 @@ class ButtonContainerWidget extends StatelessWidget {
         child: Center(
           child: Text(
             title,
-            style: const TextStyle(
-                color: primaryColor, fontWeight: FontWeight.w600),
+            style:
+
+                // Theme.of(context)
+                //     .textTheme
+                //     .headlineSmall!
+                //     .copyWith(fontWeight: FontWeight.bold),
+                const TextStyle(
+                    color: primaryColor, fontWeight: FontWeight.w600),
           ),
         ),
       ),

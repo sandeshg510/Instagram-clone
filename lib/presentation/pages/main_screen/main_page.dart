@@ -56,36 +56,34 @@ class _MainPageState extends State<MainPage> {
         if (getSingleUserState is GetSingleUserLoaded) {
           final currentUser = getSingleUserState.user;
           return Scaffold(
-            backgroundColor: backGroundColor,
             bottomNavigationBar: CupertinoTabBar(
-              backgroundColor: backGroundColor,
               items: [
                 BottomNavigationBarItem(
                     icon: Image.asset(
                   'assets/hut.png',
-                  color: primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                   height: 20,
                 )),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                     icon: Icon(
                   Icons.search_sharp,
-                  color: primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 )),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                     icon: Icon(
                   Icons.add_circle_outline_sharp,
-                  color: primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 )),
                 BottomNavigationBarItem(
                     icon: Image.asset(
                   'assets/reels_logo.png',
-                  color: primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                   height: 20,
                 )),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                     icon: Icon(
                   Icons.account_circle_sharp,
-                  color: primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 )),
               ],
               onTap: navigationTapped,

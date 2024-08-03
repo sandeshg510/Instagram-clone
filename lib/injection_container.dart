@@ -40,6 +40,7 @@ import 'package:instagram_clone/domain/usecases/firebase_usecases/user/sign_in_u
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/sign_out_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/sign_up_user_usecase.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/update_user_usecase.dart';
+import 'package:instagram_clone/presentation/cubit/theme/theme_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/auth/auth_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/chats/chats_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/comment/comment_cubit.dart';
@@ -134,6 +135,9 @@ Future<void> init() async {
         readRepliesUseCase: sl.call(),
         updateReplyUseCase: sl.call(),
       ));
+
+  //ThemeCubit
+  sl.registerFactory(() => ThemeCubit());
 
   //UseCases
 
