@@ -34,19 +34,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = AppTheme.lightTheme;
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              padding: const EdgeInsets.only(right: 30, top: 20),
-              onPressed: () {
-                BlocProvider.of<ThemeCubit>(context).toggleTheme(isDarkMode);
-              },
-              icon: const Icon(CupertinoIcons.moon_circle)),
-        ],
-      ),
       body: BlocConsumer<CredentialCubit, CredentialState>(
         listener: (context, credentialState) {
           if (credentialState is CredentialSuccess) {

@@ -5,8 +5,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
-import 'package:instagram_clone/presentation/pages/chats/messenger_page.dart';
-import 'package:instagram_clone/presentation/pages/chats/widgets/voice_message_bubble.dart';
 import 'package:instagram_clone/presentation/pages/home/widgets/post_shimmer.dart';
 import 'package:instagram_clone/presentation/pages/home/widgets/single_post_card_widget.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
@@ -20,31 +18,17 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const VoiceMessageBubble(
-                          url: "",
-                          isMe: true,
-                        )));
-          },
-          child: SvgPicture.asset(
-            'assets/ic_instagram.svg',
-            color: Theme.of(context).colorScheme.primary,
-            height: 32,
-          ),
+        title: SvgPicture.asset(
+          'assets/ic_instagram.svg',
+          color: Theme.of(context).colorScheme.primary,
+          height: 32,
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
             child: IconButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const MessengerPage()));
+                Navigator.pushNamed(context, PageConst.messengerPage);
               },
               icon: Image.asset(
                 'assets/messenger.png',

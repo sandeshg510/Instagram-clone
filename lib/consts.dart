@@ -113,6 +113,8 @@ class PageConst {
   static const String followersPage = 'followersPage';
   static const String uploadReelsPage = 'uploadReelsPage';
   static const String uploadPostPage = 'uploadPostPage';
+  static const String messengerPage = 'messengerPage';
+  static const String chatBoxPage = 'chatBoxPage';
 }
 
 class FirebaseConst {

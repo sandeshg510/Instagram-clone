@@ -49,15 +49,7 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backGroundColor,
       appBar: AppBar(
-        backgroundColor: backGroundColor,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(Icons.arrow_back_ios, color: primaryColor),
-        ),
         title: const Text('Comments', style: TextStyle(color: primaryColor)),
       ),
       body: BlocBuilder<GetSingleUserCubit, GetSingleUserState>(

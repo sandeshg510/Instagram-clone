@@ -28,5 +28,5 @@ class AppTheme {
           brightness: Brightness.dark,
           primary: AppColors.white,
           secondary: AppColors.greyColor,
-          tertiary: AppColors.black));
+          tertiary: AppColors.primaryDarkBlue));
 }

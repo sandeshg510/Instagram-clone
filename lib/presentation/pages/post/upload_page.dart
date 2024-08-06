@@ -32,11 +32,8 @@ class UploadPage extends StatelessWidget {
                 sizedBoxVer(15),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                UploadReelPage(currentUser: currentUser)));
+                    Navigator.pushNamed(context, PageConst.uploadReelsPage,
+                        arguments: currentUser);
                   },
                   child: const Text(
                     'Upload a reel',

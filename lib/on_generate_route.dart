@@ -4,6 +4,8 @@ import 'package:instagram_clone/domain/entities/comment/comment_entity.dart';
 import 'package:instagram_clone/domain/entities/comment/reply/reply_entity.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/entities/user/user_entity.dart';
+import 'package:instagram_clone/presentation/pages/chats/chat_box_page.dart';
+import 'package:instagram_clone/presentation/pages/chats/messenger_page.dart';
 import 'package:instagram_clone/presentation/pages/credential/login_page.dart';
 import 'package:instagram_clone/presentation/pages/credential/sign_up_page.dart';
 import 'package:instagram_clone/presentation/pages/post/comment/comment_page.dart';
@@ -142,6 +144,18 @@ class OnGenerateRoute {
           }
           return routeBuilder(const NoPageFound());
         }
+      case PageConst.messengerPage:
+        {
+          return routeBuilder(const MessengerPage());
+        }
+      case PageConst.chatBoxPage:
+        {
+          ChatArguments argument = args as ChatArguments;
+          return routeBuilder(ChatBoxPage(
+            user: argument.user,
+            groupId: argument.groupId,
+          ));
+        }
 
       default:
         {
@@ -149,6 +163,13 @@ class OnGenerateRoute {
         }
     }
   }
+}
+
+class ChatArguments {
+  final UserEntity user;
+  final String groupId;
+
+  ChatArguments({required this.user, required this.groupId});
 }
 
 dynamic routeBuilder(Widget child) {

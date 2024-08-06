@@ -213,7 +213,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Divider(
-                  color: secondaryColor.shade600,
+                  color: Theme.of(context).colorScheme.secondary,
                   endIndent: 173,
                   indent: 173,
                   thickness: 3,

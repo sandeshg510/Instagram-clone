@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/domain/entities/comment/reply/reply_entity.dart';
 import 'package:intl/intl.dart';
@@ -62,115 +63,133 @@ class _SingleReplyWidgetState extends State<SingleReplyWidget> {
             padding: const EdgeInsets.only(left: 1.0, top: 20),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child:
-                          profileWidget(imageUrl: widget.reply.userProfileUrl),
-                    ),
-                  ),
-                  Column(
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        '${widget.reply.username}',
-                        style: const TextStyle(
-                            fontSize: 15,
-                            color: primaryColor,
-                            fontWeight: FontWeight.bold),
+                      SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: profileWidget(
+                              imageUrl: widget.reply.userProfileUrl),
+                        ),
                       ),
-                      sizedBoxVer(5),
-                      Text(
-                        '${widget.reply.description}',
-                        style: const TextStyle(
-                            fontSize: 14,
-                            color: primaryColor,
-                            fontWeight: FontWeight.normal),
-                      ),
-                      sizedBoxVer(5),
-                      Row(
+                      sizedBoxHor(10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('${widget.reply.username}',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                  )),
+                              sizedBoxHor(10),
+                              Text(
+                                DateFormat('yyyy-MM-dd hh:mm')
+                                    .format(widget.reply.createAt!.toDate()),
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.normal),
+                              ),
+                            ],
+                          ),
+                          sizedBoxVer(5),
                           Text(
-                            DateFormat('dd/MMM/yyy ')
-                                .format(widget.reply.createAt!.toDate()),
+                            '${widget.reply.description}',
                             style: const TextStyle(
-                                fontSize: 14,
-                                color: secondaryColor,
-                                fontWeight: FontWeight.normal),
+                                fontSize: 14, fontWeight: FontWeight.normal),
                           ),
-                          sizedBoxHor(20),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _isUserReplying = !_isUserReplying;
-                              });
-                            },
-                            child: const Text(
-                              'Reply',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color: secondaryColor,
-                                  fontWeight: FontWeight.normal),
-                            ),
+                          sizedBoxVer(5),
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isUserReplying = !_isUserReplying;
+                                  });
+                                },
+                                child: Text(
+                                  'Reply',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                              ),
+                              sizedBoxHor(22),
+                              // Text(
+                              //   ' View\nReplies',
+                              //   style: TextStyle(
+                              //       fontSize: 13,
+                              //       color: Theme.of(context).colorScheme.secondary,
+                              //       fontWeight: FontWeight.normal),
+                              // ),
+                            ],
                           ),
-                          sizedBoxHor(22),
-                          const Text(
-                            ' View\nReplies',
-                            style: TextStyle(
-                                fontSize: 13,
-                                color: secondaryColor,
-                                fontWeight: FontWeight.normal),
-                          ),
+                          sizedBoxVer(5),
+                          _isUserReplying == true
+                              ? sizedBoxVer(10)
+                              : sizedBoxVer(0),
+                          _isUserReplying == true
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    FormContainerWidget(
+                                      controller: _replyDescriptionController,
+                                      hintText: 'Post your reply...',
+                                      width: 290,
+                                    ),
+                                    sizedBoxVer(10),
+                                    GestureDetector(
+                                      // onTap: _createReply,
+                                      child: const Text(
+                                        'Post',
+                                        style: TextStyle(color: blueColor),
+                                      ),
+                                    )
+                                  ],
+                                )
+                              : const SizedBox(
+                                  height: 0,
+                                  width: 0,
+                                )
                         ],
                       ),
-                      sizedBoxVer(5),
-                      _isUserReplying == true
-                          ? sizedBoxVer(10)
-                          : sizedBoxVer(0),
-                      _isUserReplying == true
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                FormContainerWidget(
-                                  controller: _replyDescriptionController,
-                                  hintText: 'Post your reply...',
-                                  width: 290,
-                                ),
-                                sizedBoxVer(10),
-                                GestureDetector(
-                                  // onTap: _createReply,
-                                  child: const Text(
-                                    'Post',
-                                    style: TextStyle(color: blueColor),
-                                  ),
-                                )
-                              ],
-                            )
-                          : Container(
-                              height: 0,
-                              width: 0,
-                            )
                     ],
                   ),
-                  sizedBoxHor(9),
-                  GestureDetector(
-                    onTap: widget.onLikePressListener,
-                    child: widget.reply.likes!.contains(_currentUid)
-                        ? Image.asset(
-                            'assets/red-heart-11121.png',
-                            color: Colors.red,
-                            height: 18,
-                          )
-                        : Image.asset(
-                            'assets/heart.png',
-                            color: secondaryColor,
-                            height: 18,
-                          ),
-                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      widget.reply.likes!.contains(_currentUid)
+                          ? GestureDetector(
+                              onTap: widget.onLikePressListener,
+                              child: const Icon(
+                                CupertinoIcons.heart_fill,
+                                size: 18,
+                                color: Colors.red,
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: widget.onLikePressListener,
+                              child: Icon(
+                                CupertinoIcons.heart,
+                                size: 18,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                      sizedBoxVer(40),
+                      sizedBoxHor(60)
+                    ],
+                  )
                 ]),
           ),
         ),

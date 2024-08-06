@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
 import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
+import 'package:instagram_clone/presentation/pages/chats/messenger_page.dart';
 import 'package:instagram_clone/presentation/pages/home/home_page.dart';
 import 'package:instagram_clone/presentation/pages/post/upload_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/profile_page.dart';
 import 'package:instagram_clone/presentation/pages/search/search_page.dart';
+import 'package:instagram_clone/injection_container.dart' as di;
+import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 
 import '../reels/reels_page.dart';
 
@@ -81,10 +85,15 @@ class _MainPageState extends State<MainPage> {
                   height: 20,
                 )),
                 BottomNavigationBarItem(
-                    icon: Icon(
-                  Icons.account_circle_sharp,
-                  color: Theme.of(context).colorScheme.primary,
-                )),
+                  icon: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: profileWidget(imageUrl: currentUser.profileUrl),
+                    ),
+                  ),
+                )
               ],
               onTap: navigationTapped,
             ),
@@ -96,7 +105,8 @@ class _MainPageState extends State<MainPage> {
                 const SearchPage(),
                 UploadPage(currentUser: currentUser),
                 const ReelsPage(),
-                ProfilePage(currentUser: currentUser)
+                ProfilePage(currentUser: currentUser),
+                const MessengerPage()
               ],
             ),
           );

@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/reels/create_reel_usecase.dart';

@@ -50,114 +50,89 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backGroundColor,
-      appBar: AppBar(
-        backgroundColor: backGroundColor,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(Icons.arrow_back_ios, color: primaryColor),
-        ),
-        title: const Text('Comments', style: TextStyle(color: primaryColor)),
+      body: SafeArea(
+        child: Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.tertiary,
+                borderRadius: const BorderRadius.all(Radius.circular(15))),
+            child: Column(
+              children: [
+                sizedBoxVer(8),
+                Divider(
+                  color: Theme.of(context).colorScheme.secondary,
+                  endIndent: 173,
+                  indent: 173,
+                  thickness: 3,
+                ),
+                sizedBoxVer(8),
+                const Text(
+                  'Comments',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Expanded(child: _commentBody()),
+              ],
+            )),
       ),
-      body: BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
-        builder: (context, singleUserState) {
-          if (singleUserState is GetSingleUserLoaded) {
-            final singleUser = singleUserState.user;
-            return BlocBuilder<GetSinglePostCubit, GetSinglePostState>(
-              builder: (context, singlePostState) {
-                if (singlePostState is GetSinglePostLoaded) {
-                  final singlePost = singlePostState.post;
-                  return BlocBuilder<CommentCubit, CommentState>(
-                    builder: (context, commentState) {
-                      if (commentState is CommentLoaded) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: profileWidget(
-                                          imageUrl: singlePost.userProfileUrl),
-                                    ),
-                                  ),
-                                  sizedBoxHor(10),
-                                  Text(
-                                    '${singlePost.username}',
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        color: primaryColor,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
+    );
+  }
+
+  Widget _commentBody() {
+    return BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
+      builder: (context, singleUserState) {
+        if (singleUserState is GetSingleUserLoaded) {
+          final singleUser = singleUserState.user;
+          return BlocBuilder<GetSinglePostCubit, GetSinglePostState>(
+            builder: (context, singlePostState) {
+              if (singlePostState is GetSinglePostLoaded) {
+                final singlePost = singlePostState.post;
+                return BlocBuilder<CommentCubit, CommentState>(
+                  builder: (context, commentState) {
+                    if (commentState is CommentLoaded) {
+                      return Column(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+
+                        children: [
+                          sizedBoxVer(20),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: commentState.comments.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final singleComment =
+                                    commentState.comments[index];
+                                return BlocProvider(
+                                  create: (context) => di.sl<ReplyCubit>(),
+                                  child: SingleCommentWidget(
+                                      comment: singleComment,
+                                      currentUser: singleUser,
+                                      onLikeClickedListener: () {
+                                        _likeComment(
+                                            comment:
+                                                commentState.comments[index]);
+                                      },
+                                      onLongPressListener: () {
+                                        _openBottomModelSheet(
+                                            context: context,
+                                            comment:
+                                                commentState.comments[index]);
+                                      }),
+                                );
+                              },
                             ),
-                            sizedBoxVer(10),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: Text(
-                                '${singlePost.description}',
-                                style: const TextStyle(
-                                    fontSize: 15,
-                                    color: primaryColor,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                            ),
-                            sizedBoxVer(10),
-                            const Divider(
-                              color: secondaryColor,
-                            ),
-                            sizedBoxVer(10),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: commentState.comments.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final singleComment =
-                                      commentState.comments[index];
-                                  return BlocProvider(
-                                    create: (context) => di.sl<ReplyCubit>(),
-                                    child: SingleCommentWidget(
-                                        comment: singleComment,
-                                        currentUser: singleUser,
-                                        onLikeClickedListener: () {
-                                          _likeComment(
-                                              comment:
-                                                  commentState.comments[index]);
-                                        },
-                                        onLongPressListener: () {
-                                          _openBottomModelSheet(
-                                              context: context,
-                                              comment:
-                                                  commentState.comments[index]);
-                                        }),
-                                  );
-                                },
-                              ),
-                            ),
-                            _commentSection(currentUser: singleUser)
-                          ],
-                        );
-                      }
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                  );
-                }
-                return const Center(child: CircularProgressIndicator());
-              },
-            );
-          }
-          return const Center(child: CircularProgressIndicator());
-        },
-      ),
+                          ),
+                          _commentSection(currentUser: singleUser)
+                        ],
+                      );
+                    }
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
     );
   }
 
@@ -170,7 +145,7 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Row(
           children: [
-            Container(
+            SizedBox(
               width: 40,
               height: 40,
               child: ClipRRect(
@@ -182,11 +157,12 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
             Expanded(
               child: TextFormField(
                 controller: _descriptionController,
-                style: const TextStyle(color: primaryColor),
-                decoration: const InputDecoration(
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Post your comment...',
-                    hintStyle: TextStyle(color: secondaryColor)),
+                    hintText: 'Add a comment...',
+                    hintStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary)),
               ),
             ),
             GestureDetector(
@@ -205,6 +181,9 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
   }
 
   _createComment(UserEntity currentUser) {
+    if (_descriptionController.text.isEmpty) {
+      return;
+    }
     BlocProvider.of<CommentCubit>(context)
         .createComments(
             comment: CommentEntity(
@@ -214,7 +193,7 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
           username: currentUser.username,
           userProfileUrl: currentUser.profileUrl,
           createAt: Timestamp.now(),
-          likes: [],
+          likes: const [],
           totalReplies: 0,
           creatorUid: currentUser.uid,
         ))
@@ -226,16 +205,16 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
   _openBottomModelSheet(
       {required BuildContext context, required CommentEntity comment}) {
     return showModalBottomSheet(
-        backgroundColor: backGroundColor,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         context: context,
         builder: (context) {
-          backGroundColor;
+          Theme.of(context).colorScheme.tertiary;
           return SingleChildScrollView(
               child: Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
             height: 300,
             decoration: BoxDecoration(
-                color: backGroundColor.withOpacity(0.8),
+                color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
@@ -243,29 +222,33 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Divider(
-                  color: secondaryColor.shade600,
+                  color: Theme.of(context).colorScheme.secondary,
                   endIndent: 173,
                   indent: 173,
                   thickness: 3,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                       right: 230, left: 30, bottom: 15, top: 20),
                   child: Text(
                     'More options',
-                    style: TextStyle(color: secondaryColor, fontSize: 18),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 18),
                   ),
                 ),
                 GestureDetector(
                   onTap: () {
                     _deleteComment(comment: comment);
                   },
-                  child: const Padding(
-                    padding: EdgeInsets.only(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
                         right: 150, left: 30, bottom: 15, top: 10),
                     child: Text(
                       'Delete Comment',
-                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 18),
                     ),
                   ),
                 ),
@@ -274,12 +257,14 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
                     Navigator.pushNamed(context, PageConst.updateCommentPage,
                         arguments: comment);
                   },
-                  child: const Padding(
-                    padding: EdgeInsets.only(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
                         right: 150, left: 30, bottom: 15, top: 10),
                     child: Text(
                       'Update Comment',
-                      style: TextStyle(color: secondaryColor, fontSize: 18),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 18),
                     ),
                   ),
                 ),

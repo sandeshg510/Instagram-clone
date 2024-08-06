@@ -254,16 +254,16 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
 
   _openBottomModelSheet(BuildContext context, ReelEntity reel) {
     return showModalBottomSheet(
-        backgroundColor: backGroundColor,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         context: context,
         builder: (context) {
-          backGroundColor;
+          Theme.of(context).colorScheme.tertiary;
           return SingleChildScrollView(
               child: Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
             height: 300,
             decoration: BoxDecoration(
-                color: backGroundColor.withOpacity(0.8),
+                color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
@@ -271,42 +271,39 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Divider(
-                  color: secondaryColor.shade600,
+                  color: Theme.of(context).colorScheme.secondary,
                   endIndent: 173,
                   indent: 173,
                   thickness: 3,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                       right: 230, left: 30, bottom: 15, top: 20),
                   child: Text(
                     'More options',
-                    style: TextStyle(color: secondaryColor, fontSize: 18),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 18),
                   ),
                 ),
-                GestureDetector(
-                  // onTap: _deletePost,
-                  child: const Padding(
-                    padding: EdgeInsets.only(
-                        right: 230, left: 30, bottom: 15, top: 10),
-                    child: Text(
-                      'Delete Post',
-                      style: TextStyle(color: secondaryColor, fontSize: 18),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      right: 230, left: 30, bottom: 15, top: 10),
+                  child: Text(
+                    'Delete Post',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 18),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    // Navigator.pushNamed(context, PageConst.updatePostPage,
-                    //     arguments: post);
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.only(
-                        right: 230, left: 30, bottom: 15, top: 10),
-                    child: Text(
-                      'Update post',
-                      style: TextStyle(color: secondaryColor, fontSize: 18),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      right: 230, left: 30, bottom: 15, top: 10),
+                  child: Text(
+                    'Update post',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 18),
                   ),
                 ),
               ],
