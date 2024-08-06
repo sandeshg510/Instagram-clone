@@ -9,7 +9,9 @@ Here I've used the followings :
 - Cloud Firestore
 
 Here I've implemented the following features :
-- Messaging, Posts, comments, profile, likes, following, followers, Search
+- Reels, Messaging, Posts, comments, profile, likes, following, followers, Search Users
 - CRUD operations on Profile, posts, comments, replies
 - animations
+- In Messaging users can send text, image, voice message.
+
 
