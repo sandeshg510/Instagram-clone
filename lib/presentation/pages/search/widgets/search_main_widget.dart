@@ -57,6 +57,12 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
                     (user) =>
                         user.username!.startsWith(_searchController.text) ||
                         user.username!
+                            .toUpperCase()
+                            .contains(_searchController.text.toUpperCase()) ||
+                        user.username!
+                            .toUpperCase()
+                            .startsWith(_searchController.text.toUpperCase()) ||
+                        user.username!
                             .toLowerCase()
                             .startsWith(_searchController.text.toLowerCase()) ||
                         user.username!.contains(_searchController.text) ||
@@ -150,12 +156,25 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
                                             }
                                           case FirebaseConst.reels:
                                             {
-                                              return SizedBox(
-                                                  width: 100,
-                                                  height: 100,
-                                                  child: profileWidget(
-                                                      imageUrl: posts[index]
-                                                          .thumbnailUrl));
+                                              return Stack(children: [
+                                                SizedBox(
+                                                    width: 130,
+                                                    child: profileWidget(
+                                                        imageUrl: posts[index]
+                                                            .thumbnailUrl)),
+                                                const Center(
+                                                  child: CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.white24,
+                                                    radius: 20,
+                                                    child: Icon(
+                                                      Icons.play_arrow_rounded,
+                                                      color: primaryColor,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ]);
                                             }
                                         }
                                       },

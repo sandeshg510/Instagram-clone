@@ -182,11 +182,24 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                             }
                           case FirebaseConst.reels:
                             {
-                              return SizedBox(
-                                  width: 100,
-                                  height: 100,
-                                  child: profileWidget(
-                                      imageUrl: posts[index].thumbnailUrl));
+                              return Stack(children: [
+                                SizedBox(
+                                    width: double.infinity,
+                                    // height: 100,
+                                    child: profileWidget(
+                                        imageUrl: posts[index].thumbnailUrl)),
+                                const Center(
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.white24,
+                                    radius: 20,
+                                    child: Icon(
+                                      Icons.play_arrow_rounded,
+                                      color: primaryColor,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ]);
                             }
                         }
                       },
