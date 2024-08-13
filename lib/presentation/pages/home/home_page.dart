@@ -8,6 +8,7 @@ import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
 import 'package:instagram_clone/presentation/pages/home/widgets/post_shimmer.dart';
 import 'package:instagram_clone/presentation/pages/home/widgets/single_post_card_widget.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
+import 'package:instagram_clone/presentation/pages/home/widgets/single_reel_card_widget_for_home.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -57,10 +58,25 @@ class HomePage extends StatelessWidget {
                       itemCount: postState.posts.length,
                       itemBuilder: (context, index) {
                         final post = postState.posts[index];
-                        return BlocProvider(
-                          create: (context) => di.sl<PostCubit>(),
-                          child: SinglePostCardWidget(post: post),
-                        );
+                        switch (post.postType) {
+                          case FirebaseConst.posts:
+                            {
+                              return BlocProvider(
+                                create: (context) => di.sl<PostCubit>(),
+                                child: SinglePostCardWidget(post: post),
+                              );
+                            }
+                          case FirebaseConst.reels:
+                            {
+                              return BlocProvider(
+                                create: (context) => di.sl<PostCubit>(),
+                                child: SingleReelCardWidgetForHome(
+                                  reel: post,
+                                  reelId: post.postId!,
+                                ),
+                              );
+                            }
+                        }
                       });
             }
             return const Center(child: CircularProgressIndicator());

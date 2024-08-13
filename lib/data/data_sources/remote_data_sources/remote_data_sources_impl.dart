@@ -292,6 +292,9 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       totalComments: 0,
       createAt: post.createAt,
       userProfileUrl: post.userProfileUrl,
+      postType: post.postType,
+      reelUrl: post.reelUrl,
+      thumbnailUrl: post.thumbnailUrl,
     ).toJson();
 
     try {

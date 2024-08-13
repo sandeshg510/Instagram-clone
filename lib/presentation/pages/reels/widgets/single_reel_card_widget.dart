@@ -2,18 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
-import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
+import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
 import 'package:instagram_clone/presentation/cubit/reel/get_single_reel/get_single_reel_cubit.dart';
 import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
-import '../../../cubit/reel/reel_cubit.dart';
+import '../../../cubit/post/post_cubit.dart';
 import '../../post/widgets/like_animation_widget.dart';
 
 class SingleReelCardWidget extends StatefulWidget {
-  final ReelEntity reel;
+  final PostEntity reel;
   final String reelId;
 
   const SingleReelCardWidget(
@@ -40,7 +41,8 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
           print('This is current UID $_currentUid');
         });
       });
-      playerController = VideoPlayerController.network(widget.reel.reelUrl!);
+      playerController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.reel.reelUrl!));
     });
     playerController!.initialize();
     playerController!.play();
@@ -236,11 +238,6 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
     );
   }
 
-  _likePost() {
-    BlocProvider.of<ReelCubit>(context)
-        .likeReels(reel: ReelEntity(reelId: widget.reel.reelId));
-  }
-
   onTap() {
     setState(() {
       play = !play;
@@ -252,7 +249,7 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
     }
   }
 
-  _openBottomModelSheet(BuildContext context, ReelEntity reel) {
+  _openBottomModelSheet(BuildContext context, PostEntity reel) {
     return showModalBottomSheet(
         backgroundColor: Theme.of(context).colorScheme.tertiary,
         context: context,
@@ -286,14 +283,20 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
                         fontSize: 18),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: 230, left: 30, bottom: 15, top: 10),
-                  child: Text(
-                    'Delete Post',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontSize: 18),
+                GestureDetector(
+                  onTap: () {
+                    _deletePost();
+                    setState(() {});
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        right: 230, left: 30, bottom: 15, top: 10),
+                    child: Text(
+                      'Delete Post',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 18),
+                    ),
                   ),
                 ),
                 Padding(
@@ -310,5 +313,18 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
             ),
           ));
         });
+  }
+
+  _deletePost() {
+    BlocProvider.of<PostCubit>(context)
+        .deletePosts(post: PostEntity(postId: widget.reel.postId));
+
+    Navigator.pop(context);
+    Fluttertoast.showToast(msg: 'Post deleted successfully');
+  }
+
+  _likePost() {
+    BlocProvider.of<PostCubit>(context)
+        .likePosts(post: PostEntity(postId: widget.reel.postId));
   }
 }

@@ -130,20 +130,34 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
                                       physics: const ScrollPhysics(),
                                       shrinkWrap: true,
                                       itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushNamed(context,
-                                                PageConst.postDetailPage,
-                                                arguments: posts[index].postId);
-                                          },
-                                          child: SizedBox(
-                                            width: 100,
-                                            height: 100,
-                                            child: profileWidget(
-                                                imageUrl:
-                                                    posts[index].postImageUrl),
-                                          ),
-                                        );
+                                        switch (posts[index].postType) {
+                                          case FirebaseConst.posts:
+                                            {
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pushNamed(context,
+                                                      PageConst.postDetailPage,
+                                                      arguments:
+                                                          posts[index].postId);
+                                                },
+                                                child: SizedBox(
+                                                    width: 100,
+                                                    height: 100,
+                                                    child: profileWidget(
+                                                        imageUrl: posts[index]
+                                                            .postImageUrl)),
+                                              );
+                                            }
+                                          case FirebaseConst.reels:
+                                            {
+                                              return SizedBox(
+                                                  width: 100,
+                                                  height: 100,
+                                                  child: profileWidget(
+                                                      imageUrl: posts[index]
+                                                          .thumbnailUrl));
+                                            }
+                                        }
                                       },
                                     ),
                                   );

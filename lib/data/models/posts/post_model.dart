@@ -12,8 +12,15 @@ class PostModel extends PostEntity {
   final num? totalComments;
   final Timestamp? createAt;
   final String? userProfileUrl;
+  final String? postType;
+
+  final String? reelUrl;
+  final String? thumbnailUrl;
 
   PostModel({
+    this.postType,
+    this.reelUrl,
+    this.thumbnailUrl,
     this.postId,
     this.creatorUid,
     this.username,
@@ -35,6 +42,9 @@ class PostModel extends PostEntity {
           totalComments: totalComments,
           createAt: createAt,
           userProfileUrl: userProfileUrl,
+          postType: postType,
+          reelUrl: reelUrl,
+          thumbnailUrl: thumbnailUrl,
         );
 
   factory PostModel.fromSnapshot(DocumentSnapshot snap) {
@@ -51,6 +61,9 @@ class PostModel extends PostEntity {
       totalComments: snapshot['totalComments'],
       createAt: snapshot['createAt'],
       userProfileUrl: snapshot['userProfileUrl'],
+      thumbnailUrl: snapshot['thumbnailUrl'],
+      postType: snapshot['postType'],
+      reelUrl: snapshot['reelUrl'],
     );
   }
 
@@ -65,5 +78,8 @@ class PostModel extends PostEntity {
         'totalComments': totalComments,
         'createAt': createAt,
         'userProfileUrl': userProfileUrl,
+        'postType': postType,
+        'reelUrl': reelUrl,
+        'thumbnailUrl': thumbnailUrl,
       };
 }

@@ -12,8 +12,14 @@ class PostEntity extends Equatable {
   final num? totalComments;
   final Timestamp? createAt;
   final String? userProfileUrl;
+  final String? postType;
+  final String? reelUrl;
+  final String? thumbnailUrl;
 
   PostEntity({
+    this.postType,
+    this.reelUrl,
+    this.thumbnailUrl,
     this.postId,
     this.creatorUid,
     this.username,
@@ -39,5 +45,8 @@ class PostEntity extends Equatable {
         totalComments,
         createAt,
         userProfileUrl,
+        postType,
+        reelUrl,
+        thumbnailUrl,
       ];
 }

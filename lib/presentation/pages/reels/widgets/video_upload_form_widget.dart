@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
+import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_reel_to_storage_usecase.dart';
+import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
 import 'package:instagram_clone/presentation/widgets/button_container_widget.dart';
 import 'dart:io';
@@ -139,10 +141,25 @@ class _VideoUploadFormWidgetState extends State<VideoUploadFormWidget> {
     BlocProvider.of<ReelCubit>(context)
         .createThumbnails(videoFilePath: widget.videoPath)
         .then((thumbnailUrl) {
-      BlocProvider.of<ReelCubit>(context).createReels(
-          reel: ReelEntity(
+      // BlocProvider.of<ReelCubit>(context).createReels(
+      //     reel: ReelEntity(
+      //   description: _descriptionController!.text,
+      //   reelId: const Uuid().v1(),
+      //   creatorUid: widget.currentUser.uid,
+      //   username: widget.currentUser.username,
+      //   reelUrl: reelUrl,
+      //   thumbnailUrl: thumbnailUrl,
+      //   likes: const [],
+      //   totalLikes: 0,
+      //   totalComments: 0,
+      //   createAt: Timestamp.now(),
+      //   userProfileUrl: widget.currentUser.profileUrl,
+      // ));
+
+      BlocProvider.of<PostCubit>(context).createPosts(
+          post: PostEntity(
         description: _descriptionController!.text,
-        reelId: const Uuid().v1(),
+        postId: const Uuid().v1(),
         creatorUid: widget.currentUser.uid,
         username: widget.currentUser.username,
         reelUrl: reelUrl,
@@ -152,6 +169,7 @@ class _VideoUploadFormWidgetState extends State<VideoUploadFormWidget> {
         totalComments: 0,
         createAt: Timestamp.now(),
         userProfileUrl: widget.currentUser.profileUrl,
+        postType: FirebaseConst.reels,
       ));
     }).whenComplete(() => _clear());
   }

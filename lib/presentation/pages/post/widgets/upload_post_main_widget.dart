@@ -235,17 +235,17 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
     BlocProvider.of<PostCubit>(context)
         .createPosts(
             post: PostEntity(
-          description: _descriptionController.text,
-          postId: const Uuid().v1(),
-          creatorUid: widget.currentUser.uid,
-          username: widget.currentUser.name,
-          postImageUrl: image,
-          likes: [],
-          totalLikes: 0,
-          totalComments: 0,
-          createAt: Timestamp.now(),
-          userProfileUrl: widget.currentUser.profileUrl,
-        ))
+                description: _descriptionController.text,
+                postId: const Uuid().v1(),
+                creatorUid: widget.currentUser.uid,
+                username: widget.currentUser.name,
+                postImageUrl: image,
+                likes: [],
+                totalLikes: 0,
+                totalComments: 0,
+                createAt: Timestamp.now(),
+                userProfileUrl: widget.currentUser.profileUrl,
+                postType: FirebaseConst.posts))
         .then((value) => _clear());
   }
 
