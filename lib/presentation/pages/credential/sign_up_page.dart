@@ -41,14 +41,14 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future selectImage() async {
     try {
-      final pickedFile = await ImagePicker.platform
-          .getImageFromSource(source: ImageSource.gallery);
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
 
       setState(() {
         if (pickedFile != null) {
           _image = File(pickedFile.path);
         } else {
-          print('no image has been selected');
+          Fluttertoast.showToast(msg: 'no image has been selected');
         }
       });
     } catch (e) {
@@ -58,14 +58,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    MediaQuery.of(context).viewInsets.bottom;
-    // SchedulerBinding.instance.addPostFrameCallback((rerun) {
-    // });
     return BlocConsumer<CredentialCubit, CredentialState>(
       listener: (context, credentialState) {
         if (credentialState is CredentialSuccess) {
           BlocProvider.of<AuthCubit>(context).loggedIn();
-          print('Listener is performed');
           setState(() {});
         }
         if (credentialState is CredentialFailure) {
@@ -74,8 +70,6 @@ class _SignUpPageState extends State<SignUpPage> {
       },
       builder: (context, credentialState) {
         if (credentialState is CredentialSuccess) {
-          print('inside credential');
-
           return BlocBuilder<AuthCubit, AuthState>(
               builder: (context, authState) {
             if (authState is Authenticated) {
@@ -91,6 +85,8 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   _bodyWidget() {
+    Size size = MediaQuery.of(context).size;
+    double height = size.height;
     return Scaffold(
       body: Padding(
         padding:
@@ -104,7 +100,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
-            sizedBoxVer(18),
+            sizedBoxVer(height * 0.018),
             Center(
               child: Stack(
                 children: [
@@ -127,28 +123,28 @@ class _SignUpPageState extends State<SignUpPage> {
                 ],
               ),
             ),
-            sizedBoxVer(35),
+            sizedBoxVer(height * 0.030),
             FormContainerWidget(
               hintText: 'Enter your Username',
               controller: _usernameController,
             ),
-            sizedBoxVer(15),
+            sizedBoxVer(height * 0.013),
             FormContainerWidget(
               hintText: 'Enter your Email',
               controller: _emailController,
             ),
-            sizedBoxVer(15),
+            sizedBoxVer(height * 0.013),
             FormContainerWidget(
               hintText: 'Enter your Password',
               isPasswordField: true,
               controller: _passwordController,
             ),
-            sizedBoxVer(15),
+            sizedBoxVer(height * 0.013),
             FormContainerWidget(
               hintText: 'Enter your Bio',
               controller: _bioController,
             ),
-            sizedBoxVer(15),
+            sizedBoxVer(height * 0.016),
             ButtonContainerWidget(
               color: blueColor,
               title: 'Sign Up',
@@ -156,7 +152,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 _signUpUser();
               },
             ),
-            sizedBoxVer(10),
+            sizedBoxVer(height * 0.013),
             _isSigningUp == true
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -168,14 +164,16 @@ class _SignUpPageState extends State<SignUpPage> {
                             fontSize: 16,
                             fontWeight: FontWeight.w400),
                       ),
-                      sizedBoxHor(10),
+                      sizedBoxHor(height * 0.013),
                       const CircularProgressIndicator()
                     ],
                   )
                 : const SizedBox(width: 0, height: 0),
             Container(),
             Flexible(flex: 1, child: Container()),
-            const Divider(),
+            const Divider(
+              height: 3,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -215,11 +213,11 @@ class _SignUpPageState extends State<SignUpPage> {
               totalPosts: 0,
               totalFollowing: 0,
               totalFollowers: 0,
-              followers: [],
+              followers: const [],
               profileUrl: '',
               website: '',
-              following: [],
-              name: '',
+              following: const [],
+              name: _usernameController.text.trim(),
               imageFile: _image),
         )
         .then((value) => _clear());
@@ -232,7 +230,6 @@ class _SignUpPageState extends State<SignUpPage> {
       _passwordController.clear();
       _bioController.clear();
       _isSigningUp = false;
-      print('clear');
     });
   }
 }

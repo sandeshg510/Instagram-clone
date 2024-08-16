@@ -1,17 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:instagram_clone/consts.dart';
-import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
-import 'package:instagram_clone/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
-import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
 import 'package:instagram_clone/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:instagram_clone/presentation/pages/chats/messenger_page.dart';
 import 'package:instagram_clone/presentation/pages/home/home_page.dart';
 import 'package:instagram_clone/presentation/pages/post/upload_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/profile_page.dart';
 import 'package:instagram_clone/presentation/pages/search/search_page.dart';
-import 'package:instagram_clone/injection_container.dart' as di;
 import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 
 import '../reels/reels_page.dart';
@@ -34,7 +29,6 @@ class _MainPageState extends State<MainPage> {
     pageController = PageController();
     super.initState();
     BlocProvider.of<GetSingleUserCubit>(context).getSingleUser(uid: widget.uid);
-    BlocProvider.of<ReelCubit>(context).getReels(reel: ReelEntity());
   }
 
   @override

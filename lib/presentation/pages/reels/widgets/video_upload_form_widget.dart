@@ -4,10 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
-import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/storage/upload_reel_to_storage_usecase.dart';
 import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
-import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
 import 'package:instagram_clone/presentation/widgets/button_container_widget.dart';
 import 'dart:io';
 import 'package:instagram_clone/injection_container.dart' as di;
@@ -15,6 +13,7 @@ import 'package:uuid/uuid.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../../domain/entities/user/user_entity.dart';
+import '../../../cubit/reel/reel_cubit.dart';
 import '../../profile/widgets/profile_form_widget.dart';
 
 class VideoUploadFormWidget extends StatefulWidget {

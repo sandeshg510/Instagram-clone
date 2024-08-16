@@ -101,6 +101,7 @@ Widget sizedBoxHor(double width) {
 
 class PageConst {
   static const String editProfilePage = 'editProfilePage';
+  static const String profilePage = 'profilePage';
   static const String updatePostPage = 'updatePostPage';
   static const String commentPage = 'commentPage';
   static const String loginPage = 'loginPage';

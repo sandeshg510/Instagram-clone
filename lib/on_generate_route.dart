@@ -17,6 +17,7 @@ import 'package:instagram_clone/presentation/pages/post/upload_post_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/edit_profile_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/followers_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/following_page.dart';
+import 'package:instagram_clone/presentation/pages/profile/profile_page.dart';
 import 'package:instagram_clone/presentation/pages/profile/single_user_profile_page.dart';
 import 'package:instagram_clone/presentation/pages/reels/upload_reel_page.dart';
 
@@ -31,6 +32,16 @@ class OnGenerateRoute {
         {
           if (args is UserEntity) {
             return routeBuilder(EditProfilePage(
+              currentUser: args,
+            ));
+          } else {
+            return routeBuilder(const NoPageFound());
+          }
+        }
+      case PageConst.profilePage:
+        {
+          if (args is UserEntity) {
+            return routeBuilder(ProfilePage(
               currentUser: args,
             ));
           } else {

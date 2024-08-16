@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
-import 'package:instagram_clone/presentation/cubit/reel/get_single_reel/get_single_reel_cubit.dart';
+import 'package:instagram_clone/presentation/cubit/post/get_single_post/get_single_post_cubit.dart';
 import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
+import '../../../../domain/app_entity.dart';
 import '../../../cubit/post/post_cubit.dart';
 import '../../post/widgets/like_animation_widget.dart';
 
@@ -28,18 +28,22 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
   VideoPlayerController? playerController;
   bool play = true;
   bool _isLikeAnimating = false;
+  bool _isLiked = false;
   String _currentUid = '';
 
   @override
   void initState() {
-    BlocProvider.of<GetSingleReelCubit>(context)
-        .getSingleReel(reelId: widget.reelId);
+    BlocProvider.of<GetSinglePostCubit>(context)
+        .getSinglePost(postId: widget.reelId);
     setState(() {
       di.sl<GetCurrentUidUseCase>().call().then((value) {
         setState(() {
           _currentUid = value;
           print('This is current UID $_currentUid');
         });
+        widget.reel.likes!.contains(_currentUid)
+            ? _isLiked = true
+            : _isLiked = false;
       });
       playerController =
           VideoPlayerController.networkUrl(Uri.parse(widget.reel.reelUrl!));
@@ -61,6 +65,8 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    double height = size.height;
+    double width = size.width;
 
     return SafeArea(
       child: Stack(alignment: Alignment.bottomRight, children: [
@@ -68,6 +74,7 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
           onDoubleTap: () {
             _likePost();
             setState(() {
+              _isLiked = !_isLiked;
               _isLikeAnimating = true;
             });
           },
@@ -115,56 +122,48 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
           ),
         ),
         Positioned(
-          top: 430,
-          right: 20,
+          top: height * 0.6,
+          right: width * 0.05,
           child: Column(
             children: [
-              GestureDetector(
-                  onTap: () {
-                    _likePost();
-
-                    setState(() {
-                      _isLikeAnimating = true;
-                    });
-                  },
-                  child: widget.reel.likes!.contains(_currentUid)
-                      ? Icon(
-                          CupertinoIcons.heart_fill,
-                          color: Colors.red.shade600,
-                          size: 32,
-                        )
-                      : const Icon(
-                          CupertinoIcons.heart,
-                          color: Colors.white,
-                          size: 32,
-                        )),
-              sizedBoxVer(3),
-              Text(
-                "${widget.reel.totalLikes}",
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-              ),
+              _isLiked
+                  ? GestureDetector(
+                      onTap: () {
+                        _likePost();
+                        setState(() {
+                          _isLiked = false;
+                        });
+                      },
+                      child: const Icon(CupertinoIcons.heart_fill,
+                          color: AppColors.red, size: 28))
+                  : GestureDetector(
+                      onTap: () {
+                        _likePost();
+                        setState(() {
+                          _isLiked = true;
+                        });
+                      },
+                      child: const Icon(CupertinoIcons.heart, size: 28)),
               sizedBoxVer(22),
-              Image.asset(
-                'assets/chat.png',
-                color: Colors.white,
-                height: 24,
-              ),
-              sizedBoxVer(3),
-              Text(
-                "${widget.reel.totalComments}",
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, PageConst.commentPage,
+                      arguments: AppEntity(
+                          uid: _currentUid, postId: widget.reel.postId));
+                },
+                child: Image.asset(
+                  'assets/chat.png',
+                  color: Colors.white,
+                  height: 20,
+                ),
               ),
               sizedBoxVer(22),
               Image.asset(
                 'assets/send.png',
                 color: Colors.white,
-                height: 24,
+                height: 20,
               ),
               sizedBoxVer(3),
-              const Text(
-                '0',
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
               sizedBoxVer(22),
               _currentUid == widget.reel.creatorUid
                   ? GestureDetector(
@@ -189,7 +188,7 @@ class _SingleReelCardWidgetState extends State<SingleReelCardWidget> {
           ),
         ),
         Positioned(
-          bottom: 100,
+          bottom: 70,
           left: 20,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

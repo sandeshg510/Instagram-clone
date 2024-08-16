@@ -5,7 +5,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
 import 'package:instagram_clone/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
-import 'package:instagram_clone/presentation/cubit/reel/get_single_reel/get_single_reel_cubit.dart';
 import 'package:instagram_clone/presentation/widgets/profile_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
@@ -35,8 +34,6 @@ class _SingleReelCardWidgetForHomeState
 
   @override
   void initState() {
-    BlocProvider.of<GetSingleReelCubit>(context)
-        .getSingleReel(reelId: widget.reelId);
     setState(() {
       di.sl<GetCurrentUidUseCase>().call().then((value) {
         setState(() {

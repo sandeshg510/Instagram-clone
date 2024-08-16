@@ -168,28 +168,35 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final userCollection = firebaseFirestore.collection(FirebaseConst.users);
     Map<String, dynamic> userInformation = Map();
 
-    if (user.username != '' && user.username != null)
+    if (user.username != '' && user.username != null) {
       userInformation['username'] = user.username;
+    }
 
-    if (user.website != '' && user.website != null)
+    if (user.website != '' && user.website != null) {
       userInformation['website'] = user.website;
+    }
 
-    if (user.profileUrl != '' && user.profileUrl != null)
+    if (user.profileUrl != '' && user.profileUrl != null) {
       userInformation['profileUrl'] = user.profileUrl;
+    }
 
     if (user.bio != '' && user.bio != null) userInformation['bio'] = user.bio;
 
-    if (user.name != '' && user.name != null)
+    if (user.name != '' && user.name != null) {
       userInformation['name'] = user.name;
+    }
 
-    if (user.totalFollowing != null)
+    if (user.totalFollowing != null) {
       userInformation['totalFollowing'] = user.totalFollowing;
+    }
 
-    if (user.totalFollowers != null)
+    if (user.totalFollowers != null) {
       userInformation['totalFollowers'] = user.totalFollowers;
+    }
 
-    if (user.totalPosts != null)
+    if (user.totalPosts != null) {
       userInformation['totalPosts'] = user.totalPosts;
+    }
 
     userCollection.doc(user.uid).update(userInformation);
   }
@@ -225,7 +232,6 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final ref = FirebaseStorage.instance.ref('voice/$name');
     await ref.putFile(File(voiceNotePath));
     String downloadUrl = await ref.getDownloadURL();
-    print('uploaded');
     Fluttertoast.showToast(msg: 'voice message sent successfully!');
     return downloadUrl;
   }
@@ -261,11 +267,6 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       {required String descriptionText,
       required String videoFilePath,
       required context}) async {
-    DocumentSnapshot userDocumentSnapshot = await firebaseFirestore
-        .collection(FirebaseConst.users)
-        .doc(const Uuid().v1())
-        .get();
-
     //Uploading video to storage
     String videoDownloadUrl =
         await uploadCompressedVideoFileToDB(videoFilePath);
@@ -287,7 +288,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       username: post.username,
       description: post.description,
       postImageUrl: post.postImageUrl,
-      likes: [],
+      likes: const [],
       totalLikes: 0,
       totalComments: 0,
       createAt: post.createAt,
@@ -333,7 +334,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       description: reel.description,
       reelUrl: reel.reelUrl,
       thumbnailUrl: reel.thumbnailUrl,
-      likes: [],
+      likes: const [],
       totalLikes: 0,
       totalComments: 0,
       createAt: reel.createAt,
@@ -367,25 +368,24 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
   @override
   Future<void> deletePost(PostEntity post) async {
-    final postCollection = firebaseFirestore.collection(FirebaseConst.posts);
-
+    final uid = await getCurrentUid();
+    final postCollection =
+        firebaseFirestore.collection(FirebaseConst.posts).doc(post.postId);
     try {
-      postCollection.doc(post.postId).delete().then((value) {
-        final userCollection = firebaseFirestore
-            .collection(FirebaseConst.users)
-            .doc(post.creatorUid);
-        userCollection.get().then((value) {
-          if (value.exists) {
-            final totalPosts = value.get('totalPosts');
-
-            userCollection.update({'totalPosts': totalPosts - 1});
-            return;
-          }
-        });
+      await postCollection.delete();
+      final userCollection =
+          firebaseFirestore.collection(FirebaseConst.users).doc(uid);
+      userCollection.get().then((value) {
+        if (value.exists) {
+          final totalPosts = value.get('totalPosts');
+          userCollection.update({'totalPosts': totalPosts - 1});
+          return;
+        }
       });
-      ;
+    } on FirebaseException catch (e) {
+      print(e.message.toString());
     } catch (e) {
-      print('some error occurred $e');
+      print(e.toString());
     }
   }
 
@@ -436,7 +436,6 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
           'totalLikes': totalLikes - 1,
         });
       } else {
-        print('liked');
         reelCollection.doc(reel.reelId).update({
           'likes': FieldValue.arrayUnion([currentUid]),
           'totalLikes': totalLikes + 1,
@@ -493,10 +492,12 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
     Map<String, dynamic> postInfo = Map();
 
-    if (post.description != '' && post.description != null)
+    if (post.description != '' && post.description != null) {
       postInfo['description'] = post.description;
-    if (post.postImageUrl != '' && post.postImageUrl != null)
+    }
+    if (post.postImageUrl != '' && post.postImageUrl != null) {
       postInfo['postImageUrl'] = post.postImageUrl;
+    }
 
     postCollection.doc(post.postId).update(postInfo);
   }
@@ -686,7 +687,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       username: reply.username,
       userProfileUrl: reply.userProfileUrl,
       createAt: reply.createAt,
-      likes: [],
+      likes: const [],
       replyId: reply.replyId,
       creatorUid: reply.creatorUid,
     ).toJson();
@@ -743,7 +744,6 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
           }
         });
       });
-      ;
     } catch (e) {
       print('Some error occurred $e');
     }

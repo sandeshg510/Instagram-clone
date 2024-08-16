@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:instagram_clone/domain/entities/user/user_entity.dart';
+import 'package:instagram_clone/domain/usecases/firebase_usecases/user/get_single_user_usecase.dart';
 import 'package:intl/intl.dart';
 import '../../../../consts.dart';
 import '../../../../domain/app_entity.dart';
@@ -23,6 +25,7 @@ class PostDetailMainWidget extends StatefulWidget {
 
 class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
   String _currentUid = '';
+  UserEntity? _currentUser;
 
   @override
   void initState() {
@@ -327,7 +330,6 @@ class _PostDetailMainWidgetState extends State<PostDetailMainWidget> {
     BlocProvider.of<PostCubit>(context)
         .deletePosts(post: PostEntity(postId: widget.postId));
 
-    Navigator.pop(context);
     Fluttertoast.showToast(msg: 'Post deleted successfully');
   }
 

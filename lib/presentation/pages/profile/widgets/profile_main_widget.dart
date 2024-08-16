@@ -22,6 +22,7 @@ class ProfileMainWidget extends StatefulWidget {
 }
 
 class _ProfileMainWidgetState extends State<ProfileMainWidget> {
+  bool isPost = true;
   @override
   void initState() {
     BlocProvider.of<PostCubit>(context).getPosts(post: PostEntity());
@@ -31,6 +32,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -147,69 +149,132 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                 ],
               ),
               sizedBoxVer(30),
-              BlocBuilder<PostCubit, PostState>(
-                builder: (context, postState) {
-                  if (postState is PostLoaded) {
-                    final posts = postState.posts
-                        .where(
-                            (post) => post.creatorUid == widget.currentUser.uid)
-                        .toList();
-                    return GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 5,
-                              mainAxisSpacing: 5),
-                      itemCount: posts.length,
-                      physics: const ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        switch (posts[index].postType) {
-                          case FirebaseConst.posts:
-                            {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, PageConst.postDetailPage,
-                                      arguments: posts[index].postId);
-                                },
-                                child: SizedBox(
-                                    width: 100,
-                                    height: 100,
-                                    child: profileWidget(
-                                        imageUrl: posts[index].postImageUrl)),
-                              );
-                            }
-                          case FirebaseConst.reels:
-                            {
-                              return Stack(children: [
-                                SizedBox(
-                                    width: double.infinity,
-                                    // height: 100,
-                                    child: profileWidget(
-                                        imageUrl: posts[index].thumbnailUrl)),
-                                const Center(
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.white24,
-                                    radius: 20,
-                                    child: Icon(
-                                      Icons.play_arrow_rounded,
-                                      color: primaryColor,
-                                      size: 20,
-                                    ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isPost = true;
+                      });
+                    },
+                    child: const Icon(
+                      Icons.grid_view_sharp,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isPost = false;
+                      });
+                    },
+                    child: Image.asset(
+                      'assets/reels_logo.png',
+                      color: Theme.of(context).colorScheme.primary,
+                      height: 28,
+                    ),
+                  ),
+                ],
+              ),
+              sizedBoxVer(10),
+              isPost == true
+                  ? Divider(
+                      indent: size.width * 0.1,
+                      endIndent: size.width * 0.57,
+                      height: 8,
+                      thickness: 3,
+                    )
+                  : Divider(
+                      indent: size.width * 0.57,
+                      endIndent: size.width * 0.1,
+                      height: 8,
+                      thickness: 3,
+                    ),
+              Divider(
+                height: 1,
+                thickness: 0.3,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              BlocBuilder<PostCubit, PostState>(builder: (context, postState) {
+                if (postState is PostLoaded) {
+                  final totalPosts = postState.posts
+                      .where(
+                          (post) => post.creatorUid == widget.currentUser.uid)
+                      .toList();
+                  final List<PostEntity> reels = [];
+                  final List<PostEntity> posts = [];
+                  for (PostEntity post in totalPosts) {
+                    if (post.postType == FirebaseConst.reels) {
+                      PostEntity reel = post;
+                      reels.add(reel);
+                    }
+                    if (post.postType == FirebaseConst.posts) {
+                      PostEntity singlePost = post;
+                      posts.add(singlePost);
+                    }
+                  }
+                  return isPost == true
+                      ? GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 5,
+                                  mainAxisSpacing: 5),
+                          itemCount: posts.length,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, PageConst.postDetailPage,
+                                    arguments: posts[index].postId);
+                              },
+                              child: SizedBox(
+                                  width: 100,
+                                  height: 100,
+                                  child: profileWidget(
+                                      imageUrl: posts[index].postImageUrl)),
+                            );
+                          },
+                        )
+                      : GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  childAspectRatio: 0.6,
+                                  crossAxisSpacing: 5,
+                                  mainAxisSpacing: 5),
+                          itemCount: reels.length,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return Stack(children: [
+                              SizedBox(
+                                  height: 300,
+                                  width: double.infinity,
+                                  child: profileWidget(
+                                      imageUrl: reels[index].thumbnailUrl)),
+                              const Center(
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.white24,
+                                  radius: 20,
+                                  child: Icon(
+                                    Icons.play_arrow_rounded,
+                                    color: primaryColor,
+                                    size: 20,
                                   ),
                                 ),
-                              ]);
-                            }
-                        }
-                      },
-                    );
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              )
+                              ),
+                            ]);
+                          });
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              })
             ],
           ),
         ),

@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/presentation/cubit/credential/credential_cubit.dart';
-import 'package:instagram_clone/presentation/cubit/theme/theme_cubit.dart';
-import 'package:instagram_clone/presentation/global/theme/app_theme.dart';
 import 'package:instagram_clone/presentation/widgets/button_container_widget.dart';
 import 'package:instagram_clone/presentation/widgets/form_container_widget.dart';
 import '../../cubit/auth/auth_cubit.dart';
@@ -62,6 +59,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _bodyWidget() {
+    Size size = MediaQuery.of(context).size;
+    double height = size.height;
+    double width = size.width;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
       child: Column(
@@ -74,18 +74,18 @@ class _LoginPageState extends State<LoginPage> {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          sizedBoxVer(30),
+          sizedBoxVer(height * 0.06),
           FormContainerWidget(
             hintText: 'Email',
             controller: _emailController,
           ),
-          sizedBoxVer(15),
+          sizedBoxVer(height * 0.018),
           FormContainerWidget(
             hintText: 'Password',
             isPasswordField: true,
             controller: _passwordController,
           ),
-          sizedBoxVer(15),
+          sizedBoxVer(height * 0.018),
           ButtonContainerWidget(
             color: blueColor,
             title: 'Sign in',
@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
               _signInUser();
             },
           ),
-          sizedBoxVer(10),
+          sizedBoxVer(height * 0.016),
           _isSigningIn == true
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 16,
                           fontWeight: FontWeight.w400),
                     ),
-                    sizedBoxHor(10),
+                    sizedBoxHor(height * 0.018),
                     const CircularProgressIndicator(),
                   ],
                 )

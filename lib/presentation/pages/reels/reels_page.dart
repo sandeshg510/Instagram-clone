@@ -1,15 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instagram_clone/consts.dart';
 import 'package:instagram_clone/domain/entities/posts/post_entity.dart';
-import 'package:instagram_clone/domain/entities/reels/reels_entity.dart';
 import 'package:instagram_clone/presentation/cubit/post/post_cubit.dart';
-import 'package:instagram_clone/presentation/cubit/reel/get_single_reel/get_single_reel_cubit.dart';
-import 'package:instagram_clone/presentation/cubit/reel/reel_cubit.dart';
-import 'package:instagram_clone/presentation/pages/home/widgets/single_reel_card_widget_for_home.dart';
 import 'package:instagram_clone/presentation/pages/reels/widgets/single_reel_card_widget.dart';
 import 'package:instagram_clone/injection_container.dart' as di;
 
@@ -54,6 +49,7 @@ class _ReelsPageState extends State<ReelsPage> {
                     scrollDirection: Axis.vertical,
                     controller: pageController,
                     itemCount: reels!.length,
+                    padEnds: true,
                     itemBuilder: (context, index) {
                       final playingReel = reels![index];
 

@@ -41,12 +41,16 @@ class PostCubit extends Cubit<PostState> {
     try {
       final streamResponse = readPostUseCase.call(post);
       streamResponse.listen((posts) {
-        emit(PostLoaded(posts: posts));
+        if (!isClosed) {
+          emit(PostLoaded(posts: posts));
+        }
       });
     } on SocketException catch (_) {
       emit(PostFailure());
     } catch (_) {
-      emit(PostFailure());
+      if (!isClosed) {
+        emit(PostFailure());
+      }
     }
   }
 
